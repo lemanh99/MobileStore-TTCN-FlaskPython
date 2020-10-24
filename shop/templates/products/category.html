@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{%block content%}
+{% include 'header.html' %}
+<div id="page-content" class="single-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="breadcrumb">
+                    <li><a href="{{url_for('home')}}">Home</a></li>
+                    {% if brand %}
+                    <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
+                    <li><a href="{{url_for('get_brand',name=brand, page=1)}}">{{ brand }}</a></li>
+                    {% elif get_cat_prod %}
+                    <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
+                    <li><a href="{{url_for('get_category',name=get_cat_prod, page=1)}}">{{ get_cat_prod }}</a></li>
+                    {% else %}
+                    <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div id="main-content" class="col-md-8">
+                {% for i in range(0,9,3) %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="products">
+                            {% for product in products['all'].items[i:i+3] %}
+                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                <div class="product-block">
+                                    <div class="product-img">
+                                        <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                             alt="{{ product.name}}"></div>
+                                    <div class="product-content">
+                                        <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                                        <div class="product-meta">
+                                            <a href="#" class="product-price">${{ product.price }}</a>
+                                            <a href="#" class="discounted-price">${{ product.price -
+                                                product.price*product.discount }}</a>
+                                        </div>
+
+                                        {% if product.discount >0 %}
+                                        <span class="offer-price">{{product.discount}}%off</span>
+                                        {% else %}
+                                        <span class="offer-price"></span>
+                                        {% endif %}
+                                        <div class="shopping-btn">
+                                            <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                            <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
+                                        </div>
+                                        <div>
+                                            <div class="rating pt-3"><span class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star-empty"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if brand %}
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="st-pagination">
+                            <ul class="pagination">
+                                {% if products['all'].has_prev %}
+                                <li><a href="{{url_for('get_brand', name=brand, page=products.prev_num)}}"
+                                       aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                                </li>
+                                {% endif %}
+                                {% if products["all"].total> 9 %}
+                                {% for page_num in products["all"].iter_pages(left_edge=1, right_edge=2,
+                                left_current=1,right_current=2) %}
+                                {% if page_num %}
+                                {% if products["all"].page == page_num %}
+                                <li class="active"><a href="{{url_for('get_brand',name=brand, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% else %}
+                                <li><a href="{{url_for('get_brand',name=brand, page=page_num)}}">{{page_num}}</a></li>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% if products["all"].has_next %}
+                                <li><a href="{{url_for('get_brand',name=brand, page=products.next_num)}}"
+                                       aria-label="Next"><span
+                                        aria-hidden="true">Next</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% elif get_cat_prod %}
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="st-pagination">
+                            <ul class="pagination">
+                                {% if products['all'].has_prev %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.prev_num)}}"
+                                       aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                                </li>
+                                {% endif %}
+                                {% if products["all"].total> 9 %}
+                                {% for page_num in products["all"].iter_pages(left_edge=1, right_edge=2,
+                                left_current=1,right_current=2) %}
+                                {% if page_num %}
+                                {% if products["all"].page == page_num %}
+                                <li class="active"><a
+                                        href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% if products["all"].has_next %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.next_num)}}"
+                                       aria-label="Next"><span
+                                        aria-hidden="true">Next</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="st-pagination">
+                            <ul class="pagination">
+                                {% if products['all'].has_prev %}
+                                <li><a href="{{url_for('get_all_category', page=products.prev_num)}}"
+                                       aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                                </li>
+                                {% endif %}
+                                {% if products["all"].total> 9 %}
+                                {% for page_num in products["all"].iter_pages(left_edge=1, right_edge=2,
+                                left_current=1,right_current=2) %}
+                                {% if page_num %}
+                                {% if products["all"].page == page_num %}
+                                <li class="active"><a href="{{url_for('get_all_category', page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% else %}
+                                <li><a href="{{url_for('get_all_category', page=page_num)}}">{{page_num}}</a></li>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% if products["all"].has_next %}
+                                <li><a href="{{url_for('get_all_category', page=products.next_num)}}" aria-label="Next"><span
+                                        aria-hidden="true">Next</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div id="sidebar" class="col-md-4">
+                <div class="widget wid-categories">
+                    <div class="heading"><h4>CATEGORIES</h4></div>
+                    <div class="content">
+                        <ul>
+                            {% for category in categories %}
+                            <li><a href="{{url_for('get_category', name=category.name)}}">{{category.name}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="widget wid-discouts">
+                    <div class="heading"><h4>DISCOUNTS</h4></div>
+                    <div class="content">
+                        <label class="checkbox"><input type="checkbox" name="discount" checked="">Upto - 10%
+                            (20)</label>
+                        <label class="checkbox"><input type="checkbox" name="discount">40% - 50% (5)</label>
+                        <label class="checkbox"><input type="checkbox" name="discount">30% - 20% (7)</label>
+                        <label class="checkbox"><input type="checkbox" name="discount">10% - 5% (2)</label>
+                        <label class="checkbox"><input type="checkbox" name="discount">Other(50)</label>
+                    </div>
+                </div>
+                <div class="widget wid-brand">
+                    <div class="heading"><h4>BRAND</h4></div>
+                    <div class="content">
+                        {% for brand in brands %}
+                        <label class="checkbox"><input type="checkbox" name="{{ brand.name }}">{{ brand.name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="widget wid-product">
+                    <div class="heading"><h4>Mới nhất</h4></div>
+                    <div class="content">
+                        {% for product in products["new"] %}
+                        <div class="product-block">
+                            <div class="product-img">
+                                <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                     alt="{{ product.name}}" style="padding-left: 45px;"></div>
+                            <div class="product-content">
+                                <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                                <div class="product-meta">
+                                    <a href="#" class="product-price">${{ product.price }}</a>
+                                    <a href="#" class="discounted-price">${{ product.price -
+                                        product.price*product.discount }}</a>
+                                </div>
+
+                                {% if product.discount >0 %}
+                                <span class="offer-price">{{product.discount}}%off</span>
+                                {% else %}
+                                <span class="offer-price"></span>
+                                {% endif %}
+                                <div class="shopping-btn">
+                                    <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                    <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
+                                </div>
+                                <div>
+                                    <div class="rating pt-3"><span class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star-empty"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+{% endblock content%}
