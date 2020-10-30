@@ -1,179 +1,200 @@
 {% extends "base.html" %}
-{%block content%}
+{% block content %}
 {% include 'header.html' %}
 <div id="page-content" class="single-page">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <ul class="breadcrumb">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="category.html">Category</a></li>
-                    <li><a href="#">Samsung Galaxy</a></li>
+                    <li><a href="{{url_for('home')}}">Home</a></li>
+                    <li><a href="{{url_for('get_all_category')}}">{{product.category.name}}</a></li>
+                    <li><a href="#">{{product.name}}</a></li>
                 </ul>
             </div>
         </div>
+
         <div class="row">
-            <div id="main-content" class="col-md-8">
+            <div id="main-content" class="col-md-8" >
                 <div class="product">
                     <div class="col-md-6">
                         <div class="image">
-                            <img src="images/galaxy-note.jpg"/>
-                            <div class="image-more">
+                            <div class="product-img ">
                                 <ul class="row">
-                                    <li class="col-lg-3 col-sm-3 col-xs-4">
-                                        <a href="#"><img class="img-responsive" src="images/galaxy-note.jpg"></a>
-                                    </li>
-                                    <li class="col-lg-3 col-sm-3 col-xs-4">
-                                        <a href="#"><img class="img-responsive" src="images/galaxy-note-2.jpg"></a>
-                                    </li>
-                                    <li class="col-lg-3 col-sm-3 col-xs-4">
-                                        <a href="#"><img class="img-responsive" src="images/galaxy-note-3.jpg"></a>
-                                    </li>
-                                    <li class="col-lg-3 col-sm-3 col-xs-4">
-                                        <a href="#"><img class="img-responsive" src="images/galaxy-note-4.jpg"></a>
-                                    </li>
+                                    <div id="b_image">
+                                        <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                        alt="{{ product.name}}">
+                                    </div>
+                                    <div class="product-content" id = "s_image">
+                                        <li class="col-lg-3 col-sm-3 col-xs-4">
+                                            <img src="{{ url_for('static', filename='images/'+ product.image_1) }}"
+                                                 alt="{{ product.name}}">
+                                        </li>
+                                        <li class="col-lg-3 col-sm-3 col-xs-4">
+                                            <img src="{{ url_for('static', filename='images/'+ product.image_2) }}"
+                                                 alt="{{ product.name}}">
+                                        </li>
+                                        <li class="col-lg-3 col-sm-3 col-xs-4">
+                                            <img src="{{ url_for('static', filename='images/'+ product.image_3) }}"
+                                                 alt="{{ product.name}}">
+                                        </li>
+                                    </div>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="caption">
-                            <div class="name"><h3>Aliquam erat volutpat</h3></div>
+                            <div class="name"><h3>{{ product.name}}</h3></div>
                             <div class="info">
-                                <ul>
-                                    <li>Brand: text</li>
-                                    <li>ID: 0122222</li>
-                                </ul>
+                                <label>Brand: </label> {{ product.brand.name}}
+                                <br>
+                                <label>ID: </label> {{product.id}}
                             </div>
-                            <div class="price">$122<span>$98</span></div>
+                            <div class="price">
+                                <label>${{ product.price}}</label>
+                                {% if product.discount >0 %}
+                                <span class="offer-price" style="color:green">{{product.discount}}%off</span>
+                                {% endif %}
+                            </div>
                             <div class="options">
-                                AVAILABLE OPTIONS
-                                <select>
-                                    <option value="" selected>----Please Select----</option>
-                                    <option value="red">RED</option>
-                                    <option value="black">BLACK</option>
-                                </select>
+                                <label>Colors: </label>
+                                {{product.colors}}
                             </div>
-                            <div class="rating"><span class="glyphicon glyphicon-star"></span><span
-                                    class="glyphicon glyphicon-star"></span><span
-                                    class="glyphicon glyphicon-star"></span><span
-                                    class="glyphicon glyphicon-star"></span><span
-                                    class="glyphicon glyphicon-star-empty"></span></div>
-                            <div class="well"><label>Qty: </label> <input class="form-inline quantity" type="text"
-                                                                          value="1"><a href="#"
-                                                                                       class="btn btn-2 ">ADD</a></div>
+                            <div class="rating" style="color: #FFC107">
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                            </div>
+                            <div class="well">
+                                <form action="{{url_for('AddCart')}}" method="post">
+                                    <input hidden name="product_id" value="{{product.id}}">
+                                    <div>
+                                        <label>Số lượng:</label>
+                                        <input name="quantity" value="1" min="1" max="20" size="5">
+                                    </div>
+                                    <div>
+                                        <label>Chọn màu:</label>
+                                        <select name="colors">
+                                        {% set colors = product.colors.split(',') %}
+                                        {% for color in colors %}
+                                        {% set col = color.split(':') %}
+                                        <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                        <button href="#" class="product-btn btn-cart">
+                                        <i class="fa fa-shopping-cart"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                             <div class="share well">
                                 <strong style="margin-right: 13px;">Share :</strong>
                                 <a href="#" class="share-btn" target="_blank">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="fa fa-twitter"> twitter</i>
                                 </a>
                                 <a href="#" class="share-btn" target="_blank">
-                                    <i class="fa fa-facebook"></i>
+                                    <i class="fa fa-facebook"> facebook</i>
                                 </a>
                                 <a href="#" class="share-btn" target="_blank">
-                                    <i class="fa fa-linkedin"></i>
+                                    <i class="fa fa-linkedin"> linkedin</i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="clear"></div>
                 </div>
                 <div class="product-desc">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#description">Description</a></li>
-                        <li><a href="#review">Review</a></li>
+                        <li><a href="#description">Description</a></li>
+                        <li class="active"><a href="#review">Review</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div id="description" class="tab-pane fade in active">
-                            <h4>Sample Lorem Ipsum Text</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ante. Mauris eleifend,
-                                quam a vulputate dictum, massa quam dapibus leo, eget vulputate orci purus ut lorem. In
-                                fringilla mi in ligula. Pellentesque aliquam quam vel dolor. Nunc adipiscing. Sed quam
-                                odio, tempus ac, aliquam molestie, varius ac, tellus. Vestibulum ut nulla aliquam risus
-                                rutrum interdum. Pellentesque lorem. Curabitur sit amet erat quis risus feugiat viverra.
-                                Pellentesque augue justo, sagittis et, lacinia at, venenatis non, arcu. Nunc nec libero.
-                                In cursus dictum risus. Etiam tristique nisl a</p>
-                            <h4>Sample Lorem Ipsum Text</h4>
-                            <p>Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum
-                                sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                                Pellentesque aliquet lacus vitae pede. Nullam mollis dolor ac nisi. Phasellus sit amet
-                                urna. Praesent pellentesque sapien sed lacus. Donec lacinia odio in odio. In sit amet
-                                elit. Maecenas gravida interdum urna. Integer pretium, arcu vitae imperdiet facilisis,
-                                elit tellus tempor nisi, vel feugiat ante velit sit amet mauris. Vivamus arcu. Integer
-                                pharetra magna ac lacus. Aliquam vitae sapien in nibh vehicula auctor. Suspendisse leo
-                                mauris, pulvinar sed, tempor et, consequat ac, lacus. Proin velit. Nulla semper lobortis
-                                mauris. Duis urna erat, ornare et, imperdiet eu, suscipit sit amet, massa. Nulla nulla
-                                nisi, pellentesque at, egestas quis, fringilla eu, diam.</p>
+                        <div id="description" class="tab-pane fade">
+                            <p>{{product.desc}}</p>
                         </div>
-                        <div id="review" class="tab-pane fade">
-                            <div class="review-text">
-                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                    ea commodo consequat.</p>
-                            </div>
+                        <div id="review" class="tab-pane fade in active">
                             <div class="review-form">
-                                <h4>Write a review</h4>
-                                <form name="form1" id="ff" method="post" action="review.php">
-                                    <label>
-                                        <span>Enter your name:</span>
-                                        <input type="text" name="name" id="name" required>
-                                    </label>
-                                    <label>
-                                        <span>Your message here:</span>
-                                        <textarea name="message" id="message"></textarea>
-                                    </label>
-                                    <div class="text-right">
-                                        <input class="btn btn-default" type="reset" name="reset" value="Reset">
-                                        <input class="btn btn-default" type="submit" name="Submit" value="Submit">
-                                    </div>
-                                </form>
+                                {% for rate in rates %}
+                                    {% if product.id == rate.product_id %}
+                                        <div><p style="font-weight: bold; color: black">{{rate.register.username}}:</p>
+                                            {{rate.desc}}</div>
+                                        <div style="text-align:right">{{rate.time}}</div>
+                                        <div style="margin-top: -20px; text-align: center;">
+                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                         - - - - - - - - - - - - - </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <h4>Write a review:</h4>
+                                <div>
+                                    {% from "_formhelpers.html" import render_field %}
+                                    <form action="{{url_for('addrate')}}" method="POST" enctype="multipart/form-data">
+                                        <input type="text" name="register_id" value="1" hidden>
+                                        <input type="text" name="product_id" value="{{product.id}}" hidden>
+                                        <textarea rows="4" cols="91" name="desc"></textarea>
+                                        <input class="btn btn-default" type="submit" value="Comment">
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="product-related">
                     <div class="heading"><h2>RELATED PRODUCTS</h2></div>
-                    <div class="products" style="heigh: 465px;">
+                    <div class="products">
                         {% for product in products["hot"] %}
                         <div class="col-lg-4 col-md-4 col-xs-12">
-                            <div class="product-block">
-                                <div class="product-img"><img
-                                        src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}"></div>
-                                <div class="product-content">
-                                    <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
-                                    <div class="product-meta"><a href="#" class="product-price">$1500</a>
-                                        <a href="#" class="discounted-price"><strike>${{ product.price -
-                                            product.price*product.discount }}</strike></a>
-                                        {% if product.discount >0 %}
-                                        <span class="offer-price">{{product.discount}}%off</span>
-                                        {% else %}
-                                        <span class="offer-price"></span>
-                                        {% endif %}
+                            <div class="product-block" style="height: 450px;">
+                                <div class="product-img">
+                                    <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                        alt="{{ product.name}}" style="height:152px; weight:152px">
+                                </div>
+                                <div class="product-content" style="margin-top:-20">
+                                    <div><h5 style="height: 35px;margin-top:-10"><a href="{{url_for('detail', id = product.id)}}"
+                                                                       class="product-title" >
+                                        {{ product.name }}</a></h5>
                                     </div>
-                                    <div class="shopping-btn">
-                                        <form action="{{url_for('AddCart')}}" method="post">
-                                            <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
-                                            <button href="#" class="product-btn btn-cart"><i
-                                                    class="fa fa-shopping-cart"></i></button>
-                                            <BR>
-                                            <input type="hidden" name="product_id" value="{{product.id}}">
-                                            <input type="hidden" name="quantity" value="1" min="1" max="20">
-                                            {% set colors = product.colors.split(',') %}
-                                            <select name="colors" style="visibility: hidden;">
-                                                {% for color in colors %}
-                                                {% set col = color.split(':') %}
-                                                <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </form>
-                                    </div>
-                                    <div>
-                                        <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                    <div class="product-meta" >
+                                        <div style="height: 60px;">
+                                            <a href="#" class="product-price">${{ product.price }}</a>
+                                            <a href="#" class="discounted-price">${{ product.price -
+                                                product.price*product.discount }}</a>
+                                            {% if product.discount >0 %}
+                                            <span class="offer-price" style="color: green;
+                                            font-weight: 10px;">{{product.discount}}%off</span>
+                                            {% else %}
+                                            <span class="offer-price"></span>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="shopping-btn">
+                                            <form action="{{url_for('AddCart')}}" method="post">
+                                                <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                                <button href="#" class="product-btn btn-cart"><i
+                                                        class="fa fa-shopping-cart"></i></button>
+                                                <BR>
+                                                <input type="hidden" name="product_id" value="{{product.id}}">
+                                                <input type="hidden" name="quantity" value="1" min="1" max="20">
+                                                {% set colors = product.colors.split(',') %}
+                                                <select name="colors" style="visibility: hidden;">
+                                                    {% for color in colors %}
+                                                    {% set col = color.split(':') %}
+                                                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        </div>
+                                        <div>
+                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star"></span><span
+                                                    class="glyphicon glyphicon-star-empty"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -190,106 +211,111 @@
                     <div class="heading"><h4>CATEGORIES</h4></div>
                     <div class="content">
                         <ul>
-                            <li><a href="#">PC Computers</a></li>
-                            <li><a href="#">Laptops & Notebooks</a></li>
-                            <li><a href="#">Mobiles & Tablet</a></li>
-                            <li><a href="#">Software</a></li>
+                            {% for category in categories %}
+                            <li><a href="{{url_for('get_category', name=category.name)}}">{{ category.name }}</a></li>
+                            {% endfor %}
                         </ul>
-                    </div>
-                </div>
-                <div class="widget wid-type">
-                    <div class="heading"><h4>TYPE</h4></div>
-                    <div class="content">
-                        <select>
-                            <option value="EL" selected>Electronics</option>
-                            <option value="MT">Mice and Trackballs</option>
-                            <option value="WC">Web Cameras</option>
-                            <option value="TA">Tablates</option>
-                            <option value="AP">Audio Parts</option>
-                        </select>
                     </div>
                 </div>
                 <div class="widget wid-discouts">
                     <div class="heading"><h4>DISCOUNTS</h4></div>
                     <div class="content">
-                        <label class="checkbox"><input type="checkbox" name="discount" checked="">Upto - 10%
-                            (20)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">40% - 50% (5)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">30% - 20% (7)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">10% - 5% (2)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">Other(50)</label>
+                        <ul>
+                            <li><a href="{{url_for('get_discount', start = 0, end = 20)}}">< 20%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 20, end = 40)}}">20 - 40%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 40, end = 60)}}">40 - 60%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 60, end = 100)}}">> 60%</a></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="widget wid-brand">
                     <div class="heading"><h4>BRAND</h4></div>
                     <div class="content">
-                        <label class="checkbox"><input type="checkbox" name="brand">Nokia</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">Samsung</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">Iphone</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">HTC</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">Oppo</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">Kings</label>
-                        <label class="checkbox"><input type="checkbox" name="brand">Zumba</label>
+                        <ul>
+                            {% for brand in brands %}
+                            <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
                 <div class="widget wid-product">
                     <div class="heading"><h4>LATEST</h4></div>
                     <div class="content">
-                        <div class="product">
-                            <a href="#"><img src="images/galaxy-note.jpg"/></a>
-                            <div class="wrapper">
-                                <h5><a href="#">Samsung Galaxy Tab</a></h5>
-                                <div class="price">$122</div>
-                                <div class="rating"><span class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star-empty"></span></div>
+                        {% for product in products['new'] %}
+                         <div class="product-block" style="height: 430px;">
+                            <div class="product-img">
+                                <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                     alt="{{ product.name}}" style="padding:0 78px 0 58px; width:100%; text-align:center;height:100%;"></div>
+                            <div class="product-content">
+                                <h5 style="height: 35px;margin-top:-10">
+                                    <a href="{{url_for('detail', id = product.id)}}"
+                                       class="product-title">{{ product.name }}</a></h5>
+                                <div class="product-meta">
+                                    <a href="#" class="product-price">${{ product.price }}</a>
+                                    <a href="#" class="discounted-price">${{ product.price -
+                                        product.price*product.discount }}</a>
+                                </div>
+                                <div class="shopping-btn">
+                                    <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                    <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
+                                </div>
+                                <div>
+                                    <div class="rating pt-3" style="color: #FFC107; margin-top: 20;">
+                                        <span class="glyphicon glyphicon-star" ></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star"></span><span
+                                            class="glyphicon glyphicon-star-empty"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="product">
-                            <a href="#"><img src="images/galaxy-s4.jpg"/></a>
-                            <div class="wrapper">
-                                <h5><a href="#">Samsung Galaxy Tab</a></h5>
-                                <div class="price">$122</div>
-                                <div class="rating"><span class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star-empty"></span></div>
-                            </div>
-                        </div>
-                        <div class="product">
-                            <a href="#"><img src="images/Z1.png"/></a>
-                            <div class="wrapper">
-                                <h5><a href="#">Samsung Galaxy Tab</a></h5>
-                                <div class="price">$122</div>
-                                <div class="rating"><span class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star"></span><span
-                                        class="glyphicon glyphicon-star-empty"></span></div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% include 'footer.html' %}
+
+<!--{% include 'footer.html' %}-->
+
+<!--{% for result in results %}-->
+<!--<script type="text/javascript">-->
+<!--    function updateStars(id) {-->
+<!--       var rating = document.getElementById("stars_" + id).value;-->
+<!--       $.ajax({-->
+<!--           url : '/rate_movie',-->
+<!--           headers: {"Content-Type": "application/json"},-->
+<!--           type : 'POST',-->
+<!--           dataType: 'json',-->
+<!--           data : JSON.stringify{'id': 'id', 'rating': rating}-->
+<!--           });-->
+<!--};-->
+<!--</script>-->
+<!--{% endfor %}-->
 <script>
 	$(document).ready(function(){
 		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
 		$('.nav-tabs a').on('shown.bs.tab', function(event){
-			var x = $(event.target).text();         // active tab
-			var y = $(event.relatedTarget).text();  // previous tab
-			$(".act span").text(x);
-			$(".prev span").text(y);
-		});
+		    var x = $(event.target).text();         // active tab
+		    var y = $(event.relatedTarget).text();  // previous tab
+		    $(".act span").text(x);
+		    $(".prev span").text(y);
+	    });
 	});
-
+</script>
+<script>
+	var b_image = document.getElementById('b_image');
+    var s_image = document.getElementById('s_image').getElementsByTagName('img');
+    for(var i = 0; i < s_image.length; i++){
+        s_image[i].addEventListener('click', full_image);
+    }
+    function full_image(){
+        var ImageSRC = this.getAttribute('src');
+        b_image.innerHTML = "<img src=" + ImageSRC + ">";
+    }
 </script>
 {% endblock content%}

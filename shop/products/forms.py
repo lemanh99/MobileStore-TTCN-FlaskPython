@@ -1,6 +1,11 @@
 from flask_wtf.file import FileAllowed, FileField, FileRequired, FileStorage
-from wtforms import Form, IntegerField, StringField, BooleanField, TextAreaField, FloatField, validators
+from wtforms import Form, IntegerField, StringField, BooleanField, TextAreaField, FloatField, validators, SubmitField
 
+
+class Rates(Form):
+    register_id = IntegerField('Register_id', [validators.DataRequired()])
+    product_id = IntegerField('Product_id', [validators.DataRequired()])
+    desc = TextAreaField('Desc', [validators.DataRequired()])
 
 class Addproducts(Form):
     name = StringField('Name', [validators.DataRequired()])

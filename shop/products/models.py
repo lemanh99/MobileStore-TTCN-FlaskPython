@@ -1,6 +1,6 @@
 from shop import db
 from datetime import datetime
-
+from shop.customers.models import Register
 
 class Addproduct(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +40,20 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category %r>' % self.name
+
+class Rate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('addproduct.id'), nullable=False)
+    product = db.relationship('Addproduct',  backref=db.backref('addproducts', lazy=True))
+
+    register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
+    register = db.relationship('Register',  backref=db.backref('registers', lazy=True))
+
+    time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    desc = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return '<Rate %r>' % self.name
 
 
 db.create_all()

@@ -65,7 +65,7 @@
                             <li class="has-sub"><a href="{{url_for('get_category', name=category.name)}}">{{ category.name }}</a>
                                 <ul>
                                     {% for brand in brands %}
-                                    <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
+                                        <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </li>

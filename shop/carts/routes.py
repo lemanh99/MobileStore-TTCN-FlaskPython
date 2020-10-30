@@ -64,7 +64,8 @@ def getCart():
     for key, product in session['Shoppingcart'].items():
         discounttotal += (product['discount'] / 100) * float(product['price']) * int(product['quantity'])
         subtotals += float(product['price']) * int(product['quantity'])
-    return render_template('products/carts.html', discounttotal=discounttotal, subtotals=subtotals, brands=brands(),
+    return render_template('products/carts.html',  discounttotal=discounttotal, subtotals=subtotals,
+                           brands=brands(),
                            categories=categories())
     # return render_template('products/carts.html', brands=brands(), categories=categories())
 

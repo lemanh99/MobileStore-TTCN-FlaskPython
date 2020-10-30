@@ -1,7 +1,9 @@
 from flask import render_template, session, request, redirect, url_for, flash, current_app
+from sphinx.testing.path import path
+
 from shop import app, db, photos
-from .models import Category, Brand, Addproduct
-from .forms import Addproducts
+from .models import Category, Brand, Addproduct, Rate, Register
+from .forms import Addproducts, Rates
 import secrets
 import os
 
@@ -10,6 +12,10 @@ def brands():
     brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
     return brands
 
+# def rates():
+#     rates = Rate.query.join(Addproduct, (Rate.id == Addproduct.brand_id)).all()
+#     return brands
+
 
 def categories():
     categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
@@ -17,6 +23,9 @@ def categories():
     # print(Addproduct)
     return categories
 
+def registers():
+    registers = Register.query.join(Rate, (Register.id == Rate.register_id)).all()
+    return categories
 
 @app.route('/')
 def home():
@@ -29,15 +38,18 @@ def home():
     products = {'all': products_all, 'hot': products_hot, 'new': products_new, 'sell': products_sell}
     return render_template('customers/index.html', products=products, brands=brands(), categories=categories())
 
-@app.route('/detail')
-def detail():
+@app.route('/detail/id_<int:id>')
+def detail(id):
+    form = Rates(request.form)
+    rates = Rate.query.filter(Rate.product_id == id).order_by(Rate.id.desc()).all()
     products_hot = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.price.desc()).limit(3).all()
-    products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).all()
+    products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
     products_sell = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.discount.desc()).limit(10).all()
     products = {'hot': products_hot, 'new': products_new, 'sell': products_sell}
-
-    return render_template('products/product.html', products=products, brands=brands(), categories=categories())
-
+    product = Addproduct.query.get_or_404(id)
+    # products = Addproduct.query.filter_by(id='id')
+    return render_template('products/product.html', product=product, products=products, brands=brands(), form=form,
+                           rates=rates, registers=registers(), categories=categories())
 
 @app.route('/result')
 def result():
@@ -46,11 +58,12 @@ def result():
     return render_template('products/result.html', products=products, brands=brands(), categories=categories())
 
 
-@app.route('/product/<int:id>')
-def single_page(id):
-    product = Addproduct.query.get_or_404(id)
-    return render_template('products/single_page.html', product=product, brands=brands(), categories=categories())
-
+# @app.route('/product/<int:id>')
+# def single_page(id):
+#     product = Addproduct.query.get_or_404(id)
+#     return render_template('products/single_page.html', product=product, brands=brands(),
+#                            categories=categories())
+#
 
 @app.route('/category')
 def get_all_category():
@@ -74,6 +87,15 @@ def get_brand(name):
                            categories=categories(),
                            get_brand=get_brand)
 
+@app.route('/category/discount/<int:start>-<int:end>')
+def get_discount(start, end):
+    page = request.args.get('page', 1, type=int)
+    product_discount = Addproduct.query.filter(Addproduct.discount >= start, Addproduct.discount < end)\
+        .order_by(Addproduct.id.desc()).paginate(page=page, per_page=9)
+    products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
+    products = {'all': product_discount, 'new': products_new}
+    return render_template('products/category.html', products=products, brands=brands(),
+                           categories=categories())
 
 @app.route('/categories/<string:name>')
 def get_category(name):
@@ -83,8 +105,7 @@ def get_category(name):
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
     products = {'all': get_cat_prod, 'new': products_new}
     return render_template('products/category.html', products=products, get_cat_prod=name, brands=brands(),
-                           categories=categories(),
-                           get_cat=get_cat)
+                           categories=categories(), get_cat=get_cat)
 
 
 @app.route('/addbrand', methods=['GET', 'POST'])
@@ -98,6 +119,38 @@ def addbrand():
         return redirect(url_for('addbrand'))
     return render_template('products/addbrand.html', title='Add brand', brands='brands')
 
+
+    # # form = Rates(request.form)
+    # # # brands = Brand.query.all()
+    # # # categories = Category.query.all()
+    # rate = Rate(id='3', product_id='10',time='2020-10-12 10:37:57', register_id='1', desc='rate')
+    # # db.session.add(rate)
+    # db.session.add(rate)
+    # db.session.commit()
+@app.route('/addrate', methods=['GET', 'POST'])
+def addrate():
+    form = Rates(request.form)
+    products_hot = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.price.desc()).limit(3).all()
+    products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).all()
+    products_sell = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.discount.desc()).limit(10).all()
+    products = {'hot': products_hot, 'new': products_new, 'sell': products_sell}
+    product_id = -1
+    if request.method == "POST":
+        # làm sao truyền id người đang dùng vào register_id
+        # register_id = db.session['_id']
+        register_id = request.form.get('register_id')
+        product_id = request.form.get('product_id')
+        desc = request.form.get('desc')
+        rate = Rate(register_id=register_id, product_id=product_id, desc=desc)
+        db.session.add(rate)
+        flash(f'The rate {register_id} was added to your database', 'success')
+        db.session.commit()
+        return redirect(url_for('detail', id=product_id))
+        # return "OK this is a post method"
+    rates = Rate.query.filter(Rate.product_id == product_id).order_by(Rate.id.desc()).all()
+    product = Addproduct.query.get_or_404(product_id)
+    return render_template('products/product.html', title='Add rate', form=form, products=products, rates=rates,
+                           product=product, brands=brands(), registers=registers(), categories=categories())
 
 @app.route('/updatebrand/<int:id>', methods=['GET', 'POST'])
 def updatebrand(id):
