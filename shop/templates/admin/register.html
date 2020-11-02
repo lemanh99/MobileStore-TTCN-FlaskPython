@@ -1,5 +1,28 @@
-{% extends "admin/layout.html" %}
+{% extends "layout.html" %}
+
 {% block content %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{{title}}</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+          <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{url_for('static' ,filename='test/assets/plugins/fontawesome-free/css/all.min.css')}}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="{{url_for('static' ,filename='test/assets/css/adminlte.min.css')}}">
+        <!-- Google Font: Source Sans Pro -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  </head>
+  <body class="hold-transition sidebar-mini">
+
+
 <div class="container">
     <div class="row">
         <div class="col-md-3"></div>
@@ -14,7 +37,6 @@
                     {{ render_field(form.email, class="form-control") }}
                     {{ render_field(form.password, class="form-control") }}
                     {{ render_field(form.confirm, class="form-control") }}
-                    
                 </div>
                 <p><input type="submit" value="Register" class="btn-info">
                 </form>
@@ -22,4 +44,13 @@
       <div class="col-md-3"></div>
     </div>
 </div>
+
+<script src="{{url_for('static' ,filename='test/assets/plugins/jquery/jquery.min.js')}} "></script>
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' ,filename='test/assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}} "></script>
+<script src="{{url_for('static' ,filename='test/assets/js/adminlte.min.js')}} "></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{{url_for('static' ,filename='test/assets/js/demo.js')}} "></script>
+</body>
+</html>
 {% endblock content %}
