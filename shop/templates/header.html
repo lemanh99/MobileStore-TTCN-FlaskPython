@@ -23,7 +23,7 @@
             <!-- logo -->
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8">
                 <div class="logo">
-                    <a href="index.html"><img src="./images/logo.png" alt=""> </a>
+                    <a href="index.html"><img src="{{ url_for('static', filename='images/name.png') }}" alt=""> </a>
                 </div>
             </div>
             <!-- /.logo -->
@@ -40,7 +40,7 @@
                 <div class="account-section">
                     <ul>
                         {% if current_user.is_authenticated %}
-                        <li><a href="#" class="title hidden-xs">My Account</a></li>
+                        <li><a href="{{url_for('update_account')}}" class="title hidden-xs">My Account</a></li>
                         <li class="hidden-xs">|</li>
                         <li><a href="{{url_for('customer_logout')}}" class="title hidden-xs">Logout</a></li>
                         {% else %}

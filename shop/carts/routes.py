@@ -57,8 +57,9 @@ def AddCart():
 
 @app.route('/carts')
 def getCart():
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) < 0:
-        return redirect(url_for('home'))
+    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+        return render_template('products/carts.html', empty=True, brands=brands(),
+                               categories=categories())
     subtotals = 0
     discounttotal = 0
     for key, product in session['Shoppingcart'].items():
@@ -72,7 +73,7 @@ def getCart():
 @app.route('/updatecart/<int:code>', methods=['POST'])
 def updatecart(code):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('home'))
+        return redirect(url_for('getCart'))
     if request.method == "POST":
         quantity = request.form.get('quantity')
         color = request.form.get('color')
@@ -92,7 +93,7 @@ def updatecart(code):
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('home'))
+        return redirect(url_for('getCart'))
     try:
         session.modified = True
         for key, item in session['Shoppingcart'].items():
@@ -108,6 +109,6 @@ def deleteitem(id):
 def clearcart():
     try:
         session.pop('Shoppingcart', None)
-        return redirect(url_for('home'))
+        return redirect(url_for('getCart'))
     except Exception as e:
         print(e)

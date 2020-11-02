@@ -11,6 +11,18 @@
                 </ul>
             </div>
         </div>
+        {% if empty %}
+        <div class="row">
+            <div class="product well">
+                <div class="row">
+                    <h3 style="text-align: center; color: #7d8f8f;">Empty</h3>
+                    <div class="col text-center">
+                        <a href="{{url_for('home')}}" class="btn btn-2 " style="padding: 3px 26px;">Go to market</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
         <div class="row">
             {% for key, product in session['Shoppingcart'].items() %}
             {% set discount =(product.discount/100) * product.price|float %}
@@ -90,6 +102,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% include 'footer.html' %}

@@ -100,7 +100,7 @@ def updatebrand(id):
         flash(f'The brand {updatebrand.name} was changed to {brand}', 'success')
         db.session.commit()
         return redirect(url_for('brands'))
-    brand = updatebrand.name
+    # brand = updatebrand.name
     return render_template('products/addbrand.html', title='Udate brand', brands='brands', updatebrand=updatebrand)
 
 

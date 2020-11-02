@@ -47,3 +47,5 @@ class CustomerLoginFrom(FlaskForm):
     # email = StringField('Email: ', [validators.Email(), validators.DataRequired()])
     username = StringField('Username: ', [validators.DataRequired()])
     password = PasswordField('Password: ', [validators.DataRequired()])
+
+
