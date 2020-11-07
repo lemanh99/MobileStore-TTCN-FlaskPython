@@ -1,9 +1,28 @@
 from flask import render_template, session, redirect, request, url_for, flash,session
 
 from shop import app, db, bcrypt
-from .form import RegistrationForm, LoginForm
-from .models import Admin
+from .form import RegistrationForm, LoginForm, CustomerRegisterForm
+from .models import Admin, Register, CustomerOrder
 from shop.products.models import Addproduct,Brand,Category
+
+
+@app.route('/customer_register', methods=['GET', 'POST'])
+def customer_register():
+    if 'email'not in session:
+        flash(f'please login first','danger')
+        return redirect(url_for('login'))
+    form = CustomerRegisterForm()
+    if form.validate_on_submit():
+        hash_password = bcrypt.generate_password_hash(form.password.data)
+        register = Register(username=form.username.data, email=form.email.data, first_name=form.first_name.data,
+                            last_name=form.last_name.data, phone_number=form.phone_number.data, gender=form.gender.data,
+                            password=hash_password)
+        db.session.add(register)
+        flash(f'Welcome {form.first_name.data} {form.last_name.data} Thank you for registering', 'success')
+        db.session.commit()
+        return redirect(url_for('customer_register'))
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('admin/customer_register.html', form=form, user=user[0])
 
 @app.route('/admin')
 def admin():
@@ -11,7 +30,6 @@ def admin():
         flash(f'please login first','danger')
         return redirect(url_for('login'))
     user = Admin.query.filter_by(email=session['email']).all()
-
     return render_template('test/index2.html', title='Admin page' , user=user[0])
 
 @app.route('/admin_manager')
@@ -21,7 +39,88 @@ def admin_manager():
         return redirect(url_for('login'))
     user = Admin.query.filter_by(email=session['email']).all()
     admins =Admin.query.all()
-    return render_template('admin/admin-manager.html', title='All admin page' , user=user[0], admins=admins)
+    return render_template('admin/admin-manager.html', title='Admin manager page' , user=user[0], admins=admins)
+
+@app.route('/customer_manager')
+def customer_manager():
+    if 'email'not in session:
+        flash(f'please login first','danger')
+        return redirect(url_for('login'))
+    user = Admin.query.filter_by(email=session['email']).all()
+    customers =Register.query.all()
+    return render_template('admin/customer_manager.html', title='Customer manager page' , user=user[0], customers=customers)
+
+@app.route('/orders')
+def orders():
+    if 'email'not in session:
+        flash(f'please login first','danger')
+        return redirect(url_for('login'))
+    user = Admin.query.filter_by(email=session['email']).all()
+    orders =CustomerOrder.query.all()
+    return render_template('admin/orders.html', title='Order manager page' , user=user[0], orders=orders)
+
+
+@app.route('/accept_order/<int:id>', methods=['GET','POST'])
+def accept_order(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    customer = CustomerOrder.query.get_or_404(id)
+    if request.method=="POST":
+        customer.status = 'Accepted'
+        db.session.commit()
+        return redirect(url_for('orders'))
+    return redirect(url_for('orders'))
+
+@app.route('/delete_order/<int:id>', methods=['GET','POST'])
+def delete_order(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    customer = CustomerOrder.query.get_or_404(id)
+    if request.method=="POST":
+        db.session.delete(customer)
+        db.session.commit()
+        return redirect(url_for('orders'))
+    return redirect(url_for('orders'))
+
+@app.route('/lock_customer/<int:id>', methods=['GET','POST'])
+def lock_customer(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    customer = Register.query.get_or_404(id)
+    if request.method=="POST":
+        customer.lock = 1
+        db.session.commit()
+        return redirect(url_for('customer_manager'))
+    return redirect(url_for('customer_manager'))
+
+@app.route('/unlock_customer/<int:id>', methods=['GET','POST'])
+def unlock_customer(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    customer = Register.query.get_or_404(id)
+    if request.method=="POST":
+        customer.lock = 0
+        db.session.commit()
+        return redirect(url_for('customer_manager'))
+    return redirect(url_for('customer_manager'))
+
+@app.route('/delete_customer/<int:id>', methods=['GET','POST'])
+def delete_customer(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    customer = Register.query.get_or_404(id)
+    if request.method=="POST":
+        db.session.delete(customer)
+        db.session.commit()
+        flash(f"The customer {customer.username} was deleted from your database","success")
+        return redirect(url_for('customer_manager'))
+    flash(f"The customer {customer.username} can't be  deleted from your database","warning")
+    return redirect(url_for('customer_manager'))
 
 @app.route('/delete_admin/<int:id>', methods=['GET','POST'])
 def delete_admin(id):
@@ -32,9 +131,9 @@ def delete_admin(id):
     if request.method=="POST":
         db.session.delete(admin)
         db.session.commit()
-        flash(f"The brand {admin.name} was deleted from your database","success")
+        flash(f"The admin {admin.name} was deleted from your database","success")
         return redirect(url_for('admin_manager'))
-    flash(f"The brand {admin.name} can't be  deleted from your database","warning")
+    flash(f"The admin {admin.name} can't be  deleted from your database","warning")
     return redirect(url_for('admin_manager'))
 
 
