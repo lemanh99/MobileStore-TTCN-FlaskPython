@@ -51,6 +51,6 @@ def login():
             flash(f'welcome {form.email.data} you are logedin now','success')
             return redirect(url_for('admin'))
         else:
-            flash(f'Wrong email and password', 'success')
+            flash(f'Wrong email and password', 'danger')
             return redirect(url_for('login'))
     return render_template('admin/login.html',title='Login page',form=form)
