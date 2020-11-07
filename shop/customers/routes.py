@@ -105,6 +105,21 @@ def customer_login():
         return redirect(url_for('customer_login'))
     return render_template('customers/login.html', form=form, brands=brands(), categories=categories())
 
+@app.route('/login/<string:page>_<int:id>', methods=['GET', 'POST'])
+def customer_login_page(page, id):
+    if current_user.is_authenticated:
+        if page == "rate":
+            return redirect(url_for('detail', id))
+    form = CustomerLoginFrom()
+    if form.validate_on_submit():
+        user = Register.query.filter_by(username=form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user)
+            return redirect(url_for('detail', id=id))
+        flash('Incorrect email and password', 'danger')
+        return redirect(url_for('customer_login_page', page=page, id=id))
+    return render_template('customers/login.html', form=form, brands=brands(), categories=categories())
+
 
 @app.route('/logout')
 @login_required

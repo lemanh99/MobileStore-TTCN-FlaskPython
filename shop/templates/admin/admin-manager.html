@@ -1,0 +1,67 @@
+{% extends 'admin/layout.html' %}
+{% block content  %}
+{%include 'admin/header.html'%}
+<div class="row justify-content-center">
+    <div style=" margin-top: 20px; margin-bottom: -45px; ">{%include '_messages.html'%}</div>
+</div>
+<div class="container mt-5">
+    <table class="table table-sm table-condensed table-striped ">
+        <thead>
+        <th>Sr</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>email</th>
+        <th>Delete</th>
+        </thead>
+        <tbody>
+        {%for admin in admins%}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td>{{admin.name}}</td>
+            <td>{{admin.username}}</td>
+            <td>{{admin.email}}</td>
+            <td>
+                {% if admin.name != user.name%}
+                <button type="button" class="btn  btn-danger" data-toggle="modal"
+                        data-target="#staticBackdrop-{{admin.id}}">
+                    Delete
+                </button>
+                {% else %}
+                <button type="button" class="btn  btn-dark btn" data-toggle="modal"
+                        data-target="#staticBackdrop-{{admin.id}}" disabled>
+                    Delete
+                </button>
+                {% endif %}
+            </td>
+        </tr>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop-{{admin.id}}" data-backdrop="static" data-keyboard="false"
+             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">{{admin.name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <span class="text-danger">are you sure delete the admin {{admin.name}}</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">Cancel
+                        </button>
+                        <form action="{{url_for('delete_admin', id=admin.id)}}" method="POST">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+        </tbody>
+    </table>
+</div>
+{%include 'admin/footer.html'%}
+{% endblock content %}

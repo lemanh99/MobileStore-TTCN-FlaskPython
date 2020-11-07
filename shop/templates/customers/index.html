@@ -2,36 +2,6 @@
 {%block content%}
 {% include 'header.html' %}
 
-<!-- slider -->
-<div class="slider">
-    <div class="owl-carousel owl-one owl-theme">
-        {% for product in products['hot'] %}
-        <div class="item">
-            <div class="slider-img">
-                <img src="{{ url_for('static', filename='images/'+product.image_1) }}" alt="{{ product.name}}"
-                     style="max-height: 97%;"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-md-8 col-sm-6 col-xs-12">
-                        <div class="slider-captions">
-                            <h1 class="slider-title">{{ product.name }}</h1>
-                            <p class="hidden-xs"></p>
-                            <p class="slider-price">${{ product.price }}</p>
-                            <a href="#" class="btn btn-primary btn-lg hidden-xs">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-<!-- /.slider -->
-<!-- mobile showcase -->
-
-<!-- /.mobile showcase -->
-<!-- latest products -->
-
 <div class="container" style="padding-top: 25px;">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -50,22 +20,31 @@
                     {% for product in products['new'] %}
                     <div class="item">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="product-block">
-                                <div class="product-img"><img
-                                        src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}"></div>
-                                <div class="product-content">
-                                    <div><h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                            <div class="product-block" style="height: 450px;"
+                                 href="{{url_for('detail', id = product.id)}}">
+                                <div class="product-img">
+                                    <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                         alt="{{ product.name}}" style="height:178px; weight:178px">
+                                </div>
+                                <div class="product-content" style="margin-top:-20">
+                                    <div><h5 style="height: 35px;margin-top:-10"><a
+                                            href="{{url_for('detail', id = product.id)}}"
+                                            class="product-title">
+                                        {{ product.name }}</a></h5>
                                     </div>
                                     <div class="product-meta">
-                                        <a href="#" class="product-price">${{ product.price }}</a>
-                                        <a href="#" class="discounted-price">${{ product.price -
-                                            product.price*product.discount }}</a>
-                                        {% if product.discount >0 %}
-                                        <span class="offer-price">{{product.discount}}%off</span>
-                                        {% else %}
-                                        <span class="offer-price"></span>
-                                        {% endif %}
+                                        <div style="height: 60px;">
+                                            <a href="#" class="product-price">${{ product.price }}</a>
+                                            <a href="#" class="discounted-price">${{ product.price -
+                                                product.price*product.discount }}</a>
+                                            {% if product.discount >0 %}
+                                            <span class="offer-price" style="scolor: green;
+                                            font-weight: 10px;">{{product.discount}}%off</span>
+                                            {% else %}
+                                            <span class="offer-price"></span>
+                                            {% endif %}
+                                        </div>
+
                                         <div class="shopping-btn">
                                             <form action="{{url_for('AddCart')}}" method="post">
                                                 <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
@@ -84,12 +63,17 @@
                                             </form>
                                         </div>
                                         <div>
-                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star-empty"></span>
+                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
+                                                {{ products['average'][product.id][0] }}/5
+                                                {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                <span class="glyphicon glyphicon-star"></span>
+                                                {% endfor %}
+                                                {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                <span class="glyphicon glyphicon-star-empty"></span>
+                                                {% endfor %}
+                                                {% if products['average'][product.id][1] != 0 %}
+                                                ({{ products['average'][product.id][1] }})
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -124,22 +108,29 @@
                     {% for product in products['sell'] %}
                     <div class="item">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="product-block">
-                                <div class="product-img"><img
-                                        src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}"></div>
-                                <div class="product-content">
-                                    <div><h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                            <div class="product-block" style="height: 450px;">
+                                <div class="product-img">
+                                    <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                         alt="{{ product.name}}" style="height:178px; weight:178px">
+                                </div>
+                                <div class="product-content" style="margin-top:-20">
+                                    <div><h5 style="height: 35px;margin-top:-10"><a
+                                            href="{{url_for('detail', id = product.id)}}"
+                                            class="product-title">
+                                        {{ product.name }}</a></h5>
                                     </div>
                                     <div class="product-meta">
-                                        <a href="#" class="product-price">${{ product.price }}</a>
-                                        <a href="#" class="discounted-price">${{ product.price -
-                                            product.price*product.discount }}</a>
-                                        {% if product.discount >0 %}
-                                        <span class="offer-price">{{product.discount}}%off</span>
-                                        {% else %}
-                                        <span class="offer-price"></span>
-                                        {% endif %}
+                                        <div style="height: 60px;">
+                                            <a href="#" class="product-price">${{ product.price }}</a>
+                                            <a href="#" class="discounted-price">${{ product.price -
+                                                product.price*product.discount }}</a>
+                                            {% if product.discount >0 %}
+                                            <span class="offer-price">{{product.discount}}%off</span>
+                                            {% else %}
+                                            <span class="offer-price"></span>
+                                            {% endif %}
+                                        </div>
+
                                         <div class="shopping-btn">
                                             <form action="{{url_for('AddCart')}}" method="post">
                                                 <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
@@ -158,12 +149,17 @@
                                             </form>
                                         </div>
                                         <div>
-                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star-empty"></span>
+                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
+                                                {{ products['average'][product.id][0] }}/5
+                                                {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                <span class="glyphicon glyphicon-star"></span>
+                                                {% endfor %}
+                                                {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                <span class="glyphicon glyphicon-star-empty"></span>
+                                                {% endfor %}
+                                                {% if products['average'][product.id][1] != 0 %}
+                                                ({{ products['average'][product.id][1] }})
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -192,52 +188,65 @@
                         <!-- product -->
                         {% for product in products['all'].items %}
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="product-block">
-                                <div class="product-img"><img
-                                        src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}"></div>
-                                <div class="product-content">
-                                    <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
-                                    <div class="product-meta"><a href="#" class="product-price">$1500</a>
-                                        <a href="#" class="discounted-price"><strike>${{ product.price -
-                                            product.price*product.discount }}</strike></a>
-                                        {% if product.discount >0 %}
-                                        <span class="offer-price">{{product.discount}}%off</span>
-                                        {% else %}
-                                        <span class="offer-price"></span>
-                                        {% endif %}
+                            <div class="product-block" style="height: 450px;">
+                                <div class="product-img">
+                                    <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
+                                         alt="{{ product.name}}" style="height:178px; weight:178px">
+                                </div>
+                                <div class="product-content" style="margin-top:-20">
+                                    <div><h5 style="height: 35px;margin-top:-10"><a
+                                            href="{{url_for('detail', id = product.id)}}"
+                                            class="product-title">
+                                        {{ product.name }}</a></h5>
                                     </div>
-                                    <div class="shopping-btn">
-                                        <form action="{{url_for('AddCart')}}" method="post">
-                                            <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
-                                            <button href="#" class="product-btn btn-cart"><i
-                                                    class="fa fa-shopping-cart"></i></button>
-                                            <BR>
-                                            <input type="hidden" name="product_id" value="{{product.id}}">
-                                            <input type="hidden" name="quantity" value="1" min="1" max="20">
-                                            {% set colors = product.colors.split(',') %}
-                                            <select name="colors" style="visibility: hidden;">
-                                                {% for color in colors %}
-                                                {% set col = color.split(':') %}
-                                                <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                    <div class="product-meta">
+                                        <div style="height: 60px;">
+                                            <a href="#" class="product-price">${{ product.price }}</a>
+                                            <a href="#" class="discounted-price">${{ product.price -
+                                                product.price*product.discount }}</a>
+                                            {% if product.discount >0 %}
+                                            <span class="offer-price">{{product.discount}}%off</span>
+                                            {% else %}
+                                            <span class="offer-price"></span>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="shopping-btn">
+                                            <form action="{{url_for('AddCart')}}" method="post">
+                                                <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                                <button href="#" class="product-btn btn-cart"><i
+                                                        class="fa fa-shopping-cart"></i></button>
+                                                <BR>
+                                                <input type="hidden" name="product_id" value="{{product.id}}">
+                                                <input type="hidden" name="quantity" value="1" min="1" max="20">
+                                                {% set colors = product.colors.split(',') %}
+                                                <select name="colors" style="visibility: hidden;">
+                                                    {% for color in colors %}
+                                                    {% set col = color.split(':') %}
+                                                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        </div>
+                                        <div>
+                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
+                                                {{ products['average'][product.id][0] }}/5
+                                                {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                <span class="glyphicon glyphicon-star"></span>
                                                 {% endfor %}
-                                            </select>
-                                        </form>
-                                    </div>
-                                    <div>
-                                        <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                                {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                <span class="glyphicon glyphicon-star-empty"></span>
+                                                {% endfor %}
+                                                {% if products['average'][product.id][1] != 0 %}
+                                                ({{ products['average'][product.id][1] }})
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {% endfor%}
-
                     </div>
                     <div class="row">
                         <div class="col text-center">

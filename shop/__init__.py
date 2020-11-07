@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/db_name'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/myshop'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/myshop1'
 app.config['SECRET_KEY'] = 'hfouewhfoiwefoquw'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
@@ -33,8 +33,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'customer_login'
 login_manager.needs_refresh_message_category = 'danger'
 login_manager.login_message = u"Please login first"
-
-
 
 from shop.admin import routes
 from shop.products import routes
