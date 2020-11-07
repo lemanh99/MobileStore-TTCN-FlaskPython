@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'header.html' %}
+<div class="container mt-4">
+    {% include '_messages.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            Inoice: {{orders.invoice}}
+            <br>
+            Status: {{orders.status}}
+            <br>
+        <table class="table table-sm">
+            <thead>
+                <th>No</th>
+                <th>Product Name</th>
+                <th>Color</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Discount</th>
+                <th>Subtotal</th>
+            </thead>
+            <tbody>
+                {% for key, product in orders.orders.items() %}
+                {% set discount =(product.discount/100) * product.price |float %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>{{product.name}}</td>
+                    <form action="{{url_for('updatecart', code=key)}}" method="post">
+                    <td>
+                        {{product.color|capitalize}}
+                    </td>
+                    <td>${{"%.2f"|format(product.price)}}</td>
+                    <td> {{product.quantity}} </td>
+                    {% if product.discount  %}
+                    <td>{{product.discount}} % &nbsp; &nbsp; is {{"%.2f"|format(discount)}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% set subtotal = product.quantity|int * product.price|float  %}
+                    <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
+                </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            <table class="table table-sm">
+            <tr>
+
+               <td>
+                   {% if orders.status =='Paid' %}
+                   {% else %}
+                <form action="{{url_for('submit_order')}}" method="POST">
+                {% set amount =  subtotals %}
+                <input type="hidden" name="amount" value="{{amount}}">
+                <input type="hidden" name="invoice" value="{{orders.invoice}}">
+<!--                <input type="button" name="CashOn",onclick="openPaymentForm()">Cash on delivery-->
+                <button class="open-button" onclick="openForm()">Cash on delivery</button>
+                    <div class="form-popup" id="myForm" style="display: none;">
+                       <form action="" class="form-container">
+                           <h1>Customer Information</h1>
+
+                            <label for="name"><b>Customer Name</b></label>
+                            <input type="text" id="customer_name" name="CustomerName" value="{{customer.username}}" readonly>
+                            <br>
+                            <label for="email"><b>Email</b></label>
+                            <input type="text" id="customer_email" name="CustomerEmail" value="{{customer.email}}" readonly>
+                            <br>
+                            <label for="phone"><b>Number Phone</b></label>
+                            <input type="text" id="customer_phone" name="CustomerPhone" value="{{customer.phone_number}}" readonly>
+                            <br>
+                            <label for="address"><b>Address</b></label>
+                            <input type="text" placeholder="Enter Address" name="CustomerAddress" required>
+                             <br>
+                            <form action="{{url_for('submit_order')}}" method="post">
+                            <button type="submit" class="btn">
+<!--                                <a href="{{url_for('submit_order')}}" class="btn btn-2" style="padding: 3px 26px; margin-bottom: 20px;">-->
+                              Submit
+<!--                                </a>-->
+                            </button>
+                            </form>
+                       </form>
+                    </div>
+
+
+
+                <script src="{{ url_for('static', filename='js/checkout.js')}}"
+                  class="stripe-button"
+                  data-key="pk_test_MaILxTYQ15v5Uhd6NKI9wPdD00qdL0QZSl"
+                  data-name="{{current_user.username}}"
+                  data-description="Payment"
+                  data-amount="{{amount}}"
+                  data-currency="USD">
+
+
+                </script>
+              </form>
+              {% endif %}
+               </td>
+               <td width="35%"></td>
+               <td> <h3> Total: ${{subtotals}}</h3> </td>
+
+            </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+  function openForm() {
+     document.getElementById("myForm").style.display = "block";
+
+
+  }
+</script>
+{% endblock content %}
