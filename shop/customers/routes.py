@@ -113,3 +113,75 @@ def customer_logout():
         return redirect(url_for('home'))
     logout_user()
     return redirect(url_for('home'))
+
+#from Danh
+#code payment
+@app.route('/getorder')
+@login_required
+#connect from carts.html, call func get_order
+def get_order():
+    if current_user.is_authenticated:
+        customer_id = current_user.id
+        invoice = secrets.token_hex(5)
+        # for key, item in session['Shoppingcart'].items():
+        #     if int(key) == id:
+        #         routes.deleteitem(id)
+        # routes.clearcart()
+        try:
+            order =CustomerOrder(invoice=invoice,customer_id=customer_id,orders=session['Shoppingcart'])
+            db.session.add(order)
+            db.session.commit()
+            #session.pop('Shoppingcart')
+            print("done")
+            return redirect(url_for('orders',invoice=invoice))
+        except Exception as e:
+            print("failsrun")
+            print(e)
+            return redirect(url_for('getCart'))
+
+@app.route('/orders/<invoice>')
+@login_required
+def orders(invoice):
+    if current_user.is_authenticated:
+        total = 0
+        customer_id = current_user.id
+        customer = Register.query.filter_by(id=customer_id).first()
+        orders = CustomerOrder.query.filter_by(customer_id=customer_id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+        subtotals = 0
+        discounttotal = 0
+        for key, product in session['Shoppingcart'].items():
+            discounttotal += (product['discount'] / 100) * float(product['price']) * int(product['quantity'])
+            subtotals += float(product['price']) * int(product['quantity'])
+            subtotals -= discounttotal
+    else:
+        return redirect(url_for('customer_login'))
+    return render_template('customers/order.html', invoice=invoice, subtotals=subtotals, customer=customer, orders=orders)
+
+# @app.route('/payment',methods=['POST'])
+# def payment():
+#     invoice = request.get('invoice')
+#     amount = request.form.get('amount')
+#     customer = stripe.Customer.create(
+#       email=request.form['stripeEmail'],
+#       source=request.form['stripeToken'],
+#     )
+#     charge = stripe.Charge.create(
+#       customer=customer.id,
+#       description='Payment',
+#       amount=amount,
+#       currency='USD',
+#     )
+#     orders = CustomerOrder.query.filter_by(customer_id = current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+#     orders.status = 'Paid'
+#     db.session.commit()
+#     return redirect(url_for('thanks'))
+
+@app.route('/submit_order',methods=['POST'])
+def submit_order():
+     if current_user.is_authenticated:
+        customer_id = current_user.id
+        customer = Register.query.filter_by(id=customer_id).first()
+        orders = CustomerOrder.query.filter_by(customer_id=customer_id).order_by(CustomerOrder.id.desc()).first()
+
+        return render_template('customers/thanks_submit.html', orders=orders)
+#end Danh
