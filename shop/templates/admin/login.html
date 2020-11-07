@@ -6,7 +6,7 @@
             <div class="col-md-6">
                 <div class="text-center bg-info p-2 h4">Login</div>
                 {% from "_formhelpers.html" import render_field %}
-                {% include 'admin/_messages.html' %}
+                {% include '_messages.html' %}
                 <form method=post>
                     {{form.csrf_token}}
                 <div>

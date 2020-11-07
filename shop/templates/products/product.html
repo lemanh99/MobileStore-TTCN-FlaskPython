@@ -14,7 +14,7 @@
         </div>
 
         <div class="row">
-            <div id="main-content" class="col-md-8" >
+            <div id="main-content" class="col-md-8">
                 <div class="product">
                     <div class="col-md-6">
                         <div class="image">
@@ -22,9 +22,9 @@
                                 <ul class="row">
                                     <div id="b_image">
                                         <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}">
+                                             alt="{{ product.name}}">
                                     </div>
-                                    <div class="product-content" id = "s_image">
+                                    <div class="product-content" id="s_image">
                                         <li class="col-lg-3 col-sm-3 col-xs-4">
                                             <img src="{{ url_for('static', filename='images/'+ product.image_1) }}"
                                                  alt="{{ product.name}}">
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="caption">
+                        <div class="caption well">
                             <div class="name"><h3>{{ product.name}}</h3></div>
                             <div class="info">
                                 <label>Brand: </label> {{ product.brand.name}}
@@ -53,21 +53,21 @@
                             <div class="price">
                                 <label>${{ product.price}}</label>
                                 {% if product.discount >0 %}
-                                <span class="offer-price" style="color:green">{{product.discount}}%off</span>
+                                <span class="offer-price">{{product.discount}}%off</span>
                                 {% endif %}
                             </div>
                             <div class="options">
                                 <label>Colors: </label>
                                 {{product.colors}}
                             </div>
-                            <div class="rating" style="color: #FFC107">
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span>
+                            <div class="rating">
+                                <span class="glyphicon glyphicon-star"></span>
+                                <span class="glyphicon glyphicon-star"></span>
+                                <span class="glyphicon glyphicon-star"></span>
+                                <span class="glyphicon glyphicon-star"></span>
+                                <span class="glyphicon glyphicon-star-empty"></span>
                             </div>
-                            <div class="well">
+                            <div>
                                 <form action="{{url_for('AddCart')}}" method="post">
                                     <input hidden name="product_id" value="{{product.id}}">
                                     <div>
@@ -77,22 +77,22 @@
                                     <div>
                                         <label>Chọn màu:</label>
                                         <select name="colors">
-                                        {% set colors = product.colors.split(',') %}
-                                        {% for color in colors %}
-                                        {% set col = color.split(':') %}
-                                        <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
-                                        {% endfor %}
+                                            {% set colors = product.colors.split(',') %}
+                                            {% for color in colors %}
+                                            {% set col = color.split(':') %}
+                                            <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
-                                    <div>
+                                    <div class="detail-btn">
                                         <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
                                         <button href="#" class="product-btn btn-cart">
-                                        <i class="fa fa-shopping-cart"></i></button>
+                                            <i class="fa fa-shopping-cart"></i></button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="share well">
-                                <strong style="margin-right: 13px;">Share :</strong>
+                            <div class="share">
+                                <strong>Share :</strong>
                                 <a href="#" class="share-btn" target="_blank">
                                     <i class="fa fa-twitter"> twitter</i>
                                 </a>
@@ -108,36 +108,82 @@
                 </div>
                 <div class="product-desc">
                     <ul class="nav nav-tabs">
-                        <li><a href="#description">Description</a></li>
-                        <li class="active"><a href="#review">Review</a></li>
+                        <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+                        <li><a href="#review" role="tab" data-toggle="tab">Review</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div id="description" class="tab-pane fade">
+                        <div id="description" class="tab-pane fade in active">
                             <p>{{product.desc}}</p>
                         </div>
-                        <div id="review" class="tab-pane fade in active">
+                        <div id="review" class="tab-pane fade">
                             <div class="review-form">
+                                {% if l==0 %}
+                                <h4>Chưa có đánh giá nào.</h4>
+                                {% endif %}
                                 {% for rate in rates %}
-                                    {% if product.id == rate.product_id %}
-                                        <div><p style="font-weight: bold; color: black">{{rate.register.username}}:</p>
-                                            {{rate.desc}}</div>
-                                        <div style="text-align:right">{{rate.time}}</div>
-                                        <div style="margin-top: -20px; text-align: center;">
-                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                         - - - - - - - - - - - - - </div>
-                                    {% endif %}
+                                {% if product.id == rate.product_id %}
+                                <div>
+                                    <div style="font-weight: bold; color: black">{{rate.register.username}}:</div>
+                                    <div>
+                                        <div class="rating" style="color: #FFC107">
+                                            {% for i in range(1,rate.rate_number+1) %}
+                                            <span class="glyphicon glyphicon-star"></span>
+                                            {% endfor %}
+                                            {% for i in range(rate.rate_number,5) %}
+                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div>{{rate.desc}}</div>
+                                </div>
+                                <div style="text-align:right">{{rate.time}}</div>
+                                <div style="margin-top: -20px; text-align: center;">
+                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                    - - - - - - - - - - - - - - -
+                                </div>
+                                {% endif %}
                                 {% endfor %}
-                                <h4>Write a review:</h4>
+                                {% if kt %}
+                                <h4>Bạn đã đánh giá. Bạn chỉ được đánh giá một lần.</h4>
+                                {% else %}
+                                <h4>Đánh giá của bạn về sản phẩm của chúng tôi:</h4>
                                 <div>
                                     {% from "_formhelpers.html" import render_field %}
                                     <form action="{{url_for('addrate')}}" method="POST" enctype="multipart/form-data">
-                                        <input type="text" name="register_id" value="1" hidden>
+                                        <input type="text" name="register_id" value="{{customer.id}}" hidden>
                                         <input type="text" name="product_id" value="{{product.id}}" hidden>
-                                        <textarea rows="4" cols="91" name="desc"></textarea>
-                                        <input class="btn btn-default" type="submit" value="Comment">
+                                        <div class="rating" style="margin-top: -10px">
+                                            <a class="glyphicon glyphicon-star-empty"
+                                               style="color: #FFC107" onclick="test1()" id="1">
+                                            </a>
+                                            <a class="glyphicon glyphicon-star-empty"
+                                               style="color: #FFC107" onclick="test2()" id="2">
+                                            </a>
+                                            <a class="glyphicon glyphicon-star-empty"
+                                               style="color: #FFC107" onclick="test3()" id="3">
+                                            </a>
+                                            <a class="glyphicon glyphicon-star-empty"
+                                               style="color: #FFC107" onclick="test4()" id="4">
+                                            </a>
+                                            <a class="glyphicon glyphicon-star-empty"
+                                               style="color: #FFC107" onclick="test5()" id="5">
+                                            </a>
+                                            <input type="hidden" name="select" id="select" value="5">
+                                        </div>
+                                        <textarea rows="4" cols="93" name="desc" style="margin-top: 10px"></textarea>
+                                        {% if customer == None %}
+                                        <h4 style="margin-top: 15;">Bạn cần
+                                            <a href="{{url_for('customer_login_page', page='rate', id=product.id)}}" style="color: blue">
+                                                đăng nhập</a>
+                                            để đánh giá</h4>
+                                        {% else %}
+                                        <input class="btn btn-default" style="margin-top: 15px" type="submit"
+                                               value="Đánh giá">
+                                        {% endif %}
                                     </form>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -150,21 +196,21 @@
                             <div class="product-block" style="height: 450px;">
                                 <div class="product-img">
                                     <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                        alt="{{ product.name}}" style="height:152px; weight:152px">
+                                         alt="{{ product.name}}" style="height:152px; weight:152px">
                                 </div>
                                 <div class="product-content" style="margin-top:-20">
-                                    <div><h5 style="height: 35px;margin-top:-10"><a href="{{url_for('detail', id = product.id)}}"
-                                                                       class="product-title" >
+                                    <div><h5 style="height: 35px;margin-top:-10"><a
+                                            href="{{url_for('detail', id = product.id)}}"
+                                            class="product-title">
                                         {{ product.name }}</a></h5>
                                     </div>
-                                    <div class="product-meta" >
+                                    <div class="product-meta">
                                         <div style="height: 60px;">
                                             <a href="#" class="product-price">${{ product.price }}</a>
                                             <a href="#" class="discounted-price">${{ product.price -
                                                 product.price*product.discount }}</a>
                                             {% if product.discount >0 %}
-                                            <span class="offer-price" style="color: green;
-                                            font-weight: 10px;">{{product.discount}}%off</span>
+                                            <span class="offer-price">{{product.discount}}%off</span>
                                             {% else %}
                                             <span class="offer-price"></span>
                                             {% endif %}
@@ -242,10 +288,11 @@
                     <div class="heading"><h4>LATEST</h4></div>
                     <div class="content">
                         {% for product in products['new'] %}
-                         <div class="product-block" style="height: 430px;">
+                        <div class="product-block" style="height: 430px;">
                             <div class="product-img">
                                 <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                     alt="{{ product.name}}" style="padding:0 78px 0 58px; width:100%; text-align:center;height:100%;"></div>
+                                     alt="{{ product.name}}"
+                                     style="padding:0 78px 0 58px; width:100%; text-align:center;height:100%;"></div>
                             <div class="product-content">
                                 <h5 style="height: 35px;margin-top:-10">
                                     <a href="{{url_for('detail', id = product.id)}}"
@@ -261,7 +308,7 @@
                                 </div>
                                 <div>
                                     <div class="rating pt-3" style="color: #FFC107; margin-top: 20;">
-                                        <span class="glyphicon glyphicon-star" ></span><span
+                                        <span class="glyphicon glyphicon-star"></span><span
                                             class="glyphicon glyphicon-star"></span><span
                                             class="glyphicon glyphicon-star"></span><span
                                             class="glyphicon glyphicon-star"></span><span
@@ -277,36 +324,6 @@
         </div>
     </div>
 </div>
-
-<!--{% include 'footer.html' %}-->
-
-<!--{% for result in results %}-->
-<!--<script type="text/javascript">-->
-<!--    function updateStars(id) {-->
-<!--       var rating = document.getElementById("stars_" + id).value;-->
-<!--       $.ajax({-->
-<!--           url : '/rate_movie',-->
-<!--           headers: {"Content-Type": "application/json"},-->
-<!--           type : 'POST',-->
-<!--           dataType: 'json',-->
-<!--           data : JSON.stringify{'id': 'id', 'rating': rating}-->
-<!--           });-->
-<!--};-->
-<!--</script>-->
-<!--{% endfor %}-->
-<script>
-	$(document).ready(function(){
-		$(".nav-tabs a").click(function(){
-			$(this).tab('show');
-		});
-		$('.nav-tabs a').on('shown.bs.tab', function(event){
-		    var x = $(event.target).text();         // active tab
-		    var y = $(event.relatedTarget).text();  // previous tab
-		    $(".act span").text(x);
-		    $(".prev span").text(y);
-	    });
-	});
-</script>
 <script>
 	var b_image = document.getElementById('b_image');
     var s_image = document.getElementById('s_image').getElementsByTagName('img');
@@ -317,5 +334,55 @@
         var ImageSRC = this.getAttribute('src');
         b_image.innerHTML = "<img src=" + ImageSRC + ">";
     }
+
+    $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+          $(this).tab('show');
+        });
+        $('.nav-tabs a').on('show.bs.tab', function(){
+        });
+    });
+
+    function test1() {
+    document.getElementById("1").className = "glyphicon glyphicon-star";
+    document.getElementById("2").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("3").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("4").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("5").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("select").value = 1;
+    }
+    function test2() {
+    document.getElementById("1").className = "glyphicon glyphicon-star";
+    document.getElementById("2").className = "glyphicon glyphicon-star";
+    document.getElementById("3").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("4").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("5").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("select").value = 2;
+    }
+    function test3() {
+    document.getElementById("1").className = "glyphicon glyphicon-star";
+    document.getElementById("2").className = "glyphicon glyphicon-star";
+    document.getElementById("3").className = "glyphicon glyphicon-star";
+    document.getElementById("4").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("5").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("select").value = 3;
+    }
+    function test4() {
+    document.getElementById("1").className = "glyphicon glyphicon-star";
+    document.getElementById("2").className = "glyphicon glyphicon-star";
+    document.getElementById("3").className = "glyphicon glyphicon-star";
+    document.getElementById("4").className = "glyphicon glyphicon-star";
+    document.getElementById("5").className = "glyphicon glyphicon-star-empty";
+    document.getElementById("select").value = 4;
+    }
+    function test5() {
+    document.getElementById("1").className = "glyphicon glyphicon-star";
+    document.getElementById("2").className = "glyphicon glyphicon-star";
+    document.getElementById("3").className = "glyphicon glyphicon-star";
+    document.getElementById("4").className = "glyphicon glyphicon-star";
+    document.getElementById("5").className = "glyphicon glyphicon-star";
+    document.getElementById("select").value = 5;
+    }
+
 </script>
 {% endblock content%}

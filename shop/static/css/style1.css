@@ -11,7 +11,7 @@
 .products {text-align: center;}
 .products:after, .products:before{clear: both; content: '\0020'; display: block; visibility: hidden; width: 0; height: 0;}
 .products .product{margin-bottom: 50px;}
-
+.offer-price{color: green;margin-left: 10px;text-decoration: line-through;}
 .product {}
 .product:after, .product:before{clear: both; content: '\0020'; display: block; visibility: hidden; width: 0; height: 0;}
 .product .image-more {margin-top: 15px;}
@@ -22,13 +22,14 @@
 .product .name h3{font-weight: 500;font-size: 20px;color: #666;margin-top: 10px;}
 .product .info ul li{margin: 10px 0;}
 .product .price {font-size: 22px;margin: 10px 0;}
-.product .price span{color: #aaa;margin-left: 10px;text-decoration: line-through;} 
+.product .price span{color: green;margin-left: 10px;text-decoration: line-through;}
+
 .product .rating{margin: 10px 0;}
-.product .rating span {margin-right: 5px;}
+.product .rating span {margin-right: 5px;color: #FFC107;}
 .product .options {margin: 10px 0;}
 .product .options select{border: 1px solid #eee; width: 100%;}
 .product input.form-inline {border-radius: 4px;border: 1px solid #ccc;padding: 4px 6px;width: 40px;}
-.product .share .share-btn {margin-right: 25px;padding-top: 20px;}
+.product .share .share-btn {margin-right: 10px;padding-top: 20px;}
 @media(max-width:767px) {.product{border: none;}}
 
 .product-desc{margin: 50px 0;}
@@ -126,4 +127,7 @@ footer .copyright ul li {display: inline-block;margin-left: 10px;}
 .btn {}
 .btn.btn-1{ background-color: #222;color: #fff;font-size: 25px;padding: 10px 15px;}
 .btn.btn-2{margin-left: 5px;background: #D9534F;color: #fff;}
+
+/* ---------------------------------------------------------------------------- */
+.detail-btn .product-btn .btn-like i{margin-left: 3px;margin-top: 1px;}
 

@@ -1,4 +1,4 @@
-from wtforms import BooleanField, StringField, PasswordField, validators , ValidationError
+from wtforms import BooleanField, StringField, PasswordField, validators, ValidationError
 from flask_wtf import FlaskForm, Form
 from .models import User
 
@@ -17,11 +17,9 @@ class RegistrationForm(FlaskForm):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
 
-        
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
-            
 
 
 class LoginForm(FlaskForm):

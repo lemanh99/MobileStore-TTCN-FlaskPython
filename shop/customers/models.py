@@ -1,13 +1,12 @@
-# from shop import db, login_manager
-from shop import db
+from shop import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 import json
 
 
-# @login_manager.user_loader
-# def user_loader(user_id):
-#     return Register.query.get(user_id)
+@login_manager.user_loader
+def user_loader(user_id):
+    return Register.query.get(user_id)
 
 
 class Register(db.Model, UserMixin):
@@ -17,8 +16,10 @@ class Register(db.Model, UserMixin):
     last_name = db.Column(db.String(50), unique=False)
     email = db.Column(db.String(50), unique=True)
     phone_number = db.Column(db.String(50), unique=True)
+    gender = db.Column(db.String(5), unique=False)
     password = db.Column(db.String(200), unique=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    lock = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<Register %r>' % self.name
