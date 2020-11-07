@@ -324,8 +324,12 @@ def get_discount(start, end):
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
     products = {'all': product_discount, 'new': products_new}
     return render_template('products/category.html', products=products, brands=brands(), categories=categories())
-# @app.route('/search/<string:value>')
-# def search(value):
+# @app.route('/search', methods=['GET', 'POST'])
+# def search():
+#     print("dat")
+#     value = request.form['searchs']
 #     search = "%{}%".format(value)
-#     products = Addproduct.query.filter(Addproduct.name.like = value%).all()
-#     for
+#     products = Addproduct.query.filter(Addproduct.name.like(search)).all()
+#     print(search)
+#
+#     print(products)
