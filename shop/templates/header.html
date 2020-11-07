@@ -130,19 +130,15 @@
                 alt="AdminLTE Logo"
                 class="brand-image img-circle elevation-3"
                 style="opacity: .8">
-            <span class="brand-text font-weight-light">Admin</span>
+            {% if user %}
+                <span class="brand-text font-weight-light">{{user.name}}</span>
+            {% else %}
+                <span class="brand-text font-weight-light">{{user.name}}</span>
+            {% endif%}
             </a>
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="{{url_for('static',filename='images/user1-128x128.jpg')}}" class="img-circle elevation-2" alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">Tên Admin</a>
-                    </div>
-                </div>
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -192,7 +188,7 @@
                                 <li class="nav-item">
                                     <a href="categories" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>ALL Category</p>
+                                        <p>Category Manager</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -215,7 +211,7 @@
                                 <li class="nav-item">
                                     <a href="product" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>ALL Product</p>
+                                        <p>Product Manager</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -226,11 +222,57 @@
                                 </li>                       
                             </ul>
                         </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-pie"></i>
+                                <p>
+                                    Admin
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="admin_manager" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Admin Manager</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="register" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Admin</p>
+                                    </a>
+                                </li>                       
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-pie"></i>
+                                <p>
+                                    User
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="admin_manager" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>User Manager</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="register" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add User</p>
+                                    </a>
+                                </li>                       
+                            </ul>
+                        </li>
                         <li class="nav-item">
                             <a href="../calendar.html" class="nav-link">
                                 <i class="nav-icon far fa-calendar-alt"></i>
                                 <p>
-                                    Calendar
+                                    Orders
                                     <span class="badge badge-info right">2</span>
                                 </p>
                             </a>
@@ -239,47 +281,10 @@
                             <a href="../gallery.html" class="nav-link">
                                 <i class="nav-icon far fa-image"></i>
                                 <p>
-                                    Gallery
+                                    Feedback
                                 </p>
                             </a>
-                        </li>
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon far fa-envelope"></i>
-                                <p>
-                                    Mailbox
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="../mailbox/mailbox.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Inbox</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="../mailbox/compose.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Compose</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="../mailbox/read-mail.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Read</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    
-                        <li class="nav-item">
-                            <a href="https://adminlte.io/docs/3.0" class="nav-link">
-                                <i class="nav-icon fas fa-file"></i>
-                                <p>Documentation</p>
-                            </a>
-                        </li>
-                        
+                        </li>                        
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -290,23 +295,7 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1></h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active"></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.container-fluid -->
-            </section>
+
             <!-- Main content -->
             <section class="content">
                 <!-- Default box -->

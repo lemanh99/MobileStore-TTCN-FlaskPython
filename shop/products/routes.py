@@ -4,11 +4,15 @@ from .models import Category,Brand,Addproduct
 from .form import Addproducts
 import secrets
 import os
+from shop.admin.models import Admin
 
 
 
 @app.route('/addbrand',methods=['GET','POST'])
 def addbrand():
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     if request.method =="POST":
         getbrand = request.form.get('brand')
         brand = Brand(name=getbrand)
@@ -16,11 +20,15 @@ def addbrand():
         flash(f'The brand {getbrand} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addbrand'))
-    return render_template('products/addbrand.html', title='Add brand',brands='brands')
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/addbrand.html', title='Add brand',brands='brands', user=user[0])
 
 
 @app.route('/addcat',methods=['GET','POST'])
 def addcat():
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     if request.method =="POST":
         getcat = request.form.get('category')
         cat = Category(name=getcat)
@@ -28,10 +36,14 @@ def addcat():
         flash(f'The category {getcat} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcat'))
-    return render_template('products/addbrand.html', title='Add category')
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/addbrand.html', title='Add category', user=user[0])
 
 @app.route('/addproduct', methods=['GET','POST'])
 def addproduct():
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     form = Addproducts(request.form)
     brands = Brand.query.all()
     categories = Category.query.all()
@@ -52,7 +64,8 @@ def addproduct():
         flash(f'The product {product.name} was added in database','success')
         db.session.commit()
         return redirect(url_for('addproduct'))
-    return render_template('products/addproduct.html', form=form, title='Add a Product', brands=brands,categories=categories)
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/addproduct.html', form=form, title='Add a Product', brands=brands,categories=categories, user=user[0])
 
 @app.route('/updatebrand/<int:id>',methods=['GET','POST'])
 def updatebrand(id):
@@ -67,7 +80,8 @@ def updatebrand(id):
         db.session.commit()
         return redirect(url_for('brands'))
     brand = updatebrand.name
-    return render_template('products/updatebrand.html', title='Uppdate brand',brands='brands',updatebrand=updatebrand)
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/updatebrand.html', title='Uppdate brand',brands='brands',updatebrand=updatebrand, user=user[0])
 
 @app.route('/updatecat/<int:id>',methods=['GET','POST'])
 def updatecat(id):
@@ -82,12 +96,16 @@ def updatecat(id):
         db.session.commit()
         return redirect(url_for('categories'))
     category = updatecat.name
-    return render_template('products/updatebrand.html', title='Update cat',updatecat=updatecat)
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/updatebrand.html', title='Update cat',updatecat=updatecat, user=user[0])
    
 
 
 @app.route('/updateproduct/<int:id>', methods=['GET','POST'])
 def updateproduct(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     form = Addproducts(request.form)
     product = Addproduct.query.get_or_404(id)
     brands = Brand.query.all()
@@ -137,12 +155,16 @@ def updateproduct(id):
     form.description.data = product.desc
     brand = product.brand.name
     category = product.category.name
-    return render_template('products/updateproduct.html', form=form, title='Update Product',product=product, brands=brands,categories=categories)   
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('products/updateproduct.html', form=form, title='Update Product',product=product, brands=brands,categories=categories, user=user[0])   
 
 
 
 @app.route('/deletebrand/<int:id>', methods=['GET','POST'])
 def deletebrand(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     brand = Brand.query.get_or_404(id)
     if request.method=="POST":
         db.session.delete(brand)
@@ -156,6 +178,9 @@ def deletebrand(id):
 
 @app.route('/deletecat/<int:id>', methods=['GET','POST'])
 def deletecat(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     category = Category.query.get_or_404(id)
     if request.method=="POST":
         db.session.delete(category)
@@ -169,6 +194,9 @@ def deletecat(id):
 
 @app.route('/deleteproduct/<int:id>', methods=['POST'])
 def deleteproduct(id):
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
     product = Addproduct.query.get_or_404(id)
     if request.method =="POST":
         try:
