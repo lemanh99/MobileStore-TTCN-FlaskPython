@@ -13,6 +13,8 @@
                     {% elif get_cat_prod %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
                     <li><a href="{{url_for('get_category',name=get_cat_prod, page=1)}}">{{ get_cat_prod }}</a></li>
+                    {% elif get_search %}
+                    <li><a href="{{url_for('get_all_category', page=1)}}">Search for '{{ get_search }}'</a></li>
                     {% else %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
                     {% endif %}
@@ -21,6 +23,13 @@
         </div>
         <div class="row">
             <div id="main-content" class="col-md-8">
+                {%if products['all'].items|length <=0 %}
+                {% if get_search %}
+                <h2>Không tìm thấy kết quả cho '{{ get_search }} '</h2>
+                {% else %}
+                <h2>Không có sản phẩm phù hợp.</h2>
+                {% endif %}
+                {% else %}
                 {% for i in range(0,9,3) %}
                 <div class="row">
                     <div class="col-md-12">
@@ -68,12 +77,17 @@
                                                 </form>
                                             </div>
                                             <div>
-                                                <div class="rating pt-3" style="color: #FFC107; margin-top: -30;"><span
-                                                        class="glyphicon glyphicon-star"></span><span
-                                                        class="glyphicon glyphicon-star"></span><span
-                                                        class="glyphicon glyphicon-star"></span><span
-                                                        class="glyphicon glyphicon-star"></span><span
-                                                        class="glyphicon glyphicon-star-empty"></span>
+                                                <div class="rating pt-3" style="color: #FFC107; margin-top: -30;">
+                                                    {{ products['average'][product.id][0] }}/5
+                                                    {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                    <span class="glyphicon glyphicon-star"></span>
+                                                    {% endfor %}
+                                                    {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                                    {% endfor %}
+                                                    {% if products['average'][product.id][1] != 0 %}
+                                                    ({{ products['average'][product.id][1] }})
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
@@ -85,6 +99,7 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% endif %}
                 {% if brand %}
                 <div class="row">
                     <div class="col text-center">
@@ -152,12 +167,47 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
+                {% elif get_search %}
                 <div class="row">
                     <div class="col text-center">
                         <div class="st-pagination">
                             <ul class="pagination">
                                 {% if products['all'].has_prev %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.prev_num)}}"
+                                       aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                                </li>
+                                {% endif %}
+                                {% if products["all"].total> 9 %}
+                                {% for page_num in products["all"].iter_pages(left_edge=1, right_edge=2,
+                                left_current=1,right_current=2) %}
+                                {% if page_num %}
+                                {% if products["all"].page == page_num %}
+                                <li class="active"><a
+                                        href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% if products["all"].has_next %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.next_num)}}"
+                                       aria-label="Next"><span
+                                        aria-hidden="true">Next</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="st-pagination">
+                            <ul class="pagination">
+                                {% if products.has_prev %}
                                 <li><a href="{{url_for('get_all_category', page=products.prev_num)}}"
                                        aria-label="previous"><span aria-hidden="true">Previous</span></a>
                                 </li>
@@ -242,11 +292,16 @@
                                 </div>
                                 <div>
                                     <div class="rating pt-3" style="color: #FFC107; margin-top: 20;">
-                                        <span class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star-empty"></span>
+                                        {{ products['average'][product.id][0] }}/5
+                                        {% for i in range(products['average'][product.id][0]|int+1) %}
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        {% endfor %}
+                                        {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        {% endfor %}
+                                        {% if products['average'][product.id][1] != 0 %}
+                                        ({{ products['average'][product.id][1] }})
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

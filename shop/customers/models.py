@@ -19,7 +19,7 @@ class Register(db.Model, UserMixin):
     gender = db.Column(db.String(5), unique=False)
     password = db.Column(db.String(200), unique=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    lock = db.Column(db.Boolean, default=True)
+    lock = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<Register %r>' % self.name

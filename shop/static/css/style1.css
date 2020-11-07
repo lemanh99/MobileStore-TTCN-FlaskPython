@@ -11,7 +11,7 @@
 .products {text-align: center;}
 .products:after, .products:before{clear: both; content: '\0020'; display: block; visibility: hidden; width: 0; height: 0;}
 .products .product{margin-bottom: 50px;}
-.offer-price{color: green;margin-left: 10px;text-decoration: line-through;}
+.offer-price{color: red;margin-left: 10px;text-decoration: line-through;}
 .product {}
 .product:after, .product:before{clear: both; content: '\0020'; display: block; visibility: hidden; width: 0; height: 0;}
 .product .image-more {margin-top: 15px;}
@@ -22,7 +22,7 @@
 .product .name h3{font-weight: 500;font-size: 20px;color: #666;margin-top: 10px;}
 .product .info ul li{margin: 10px 0;}
 .product .price {font-size: 22px;margin: 10px 0;}
-.product .price span{color: green;margin-left: 10px;text-decoration: line-through;}
+.product .price span{color: red;margin-left: 10px;text-decoration: line-through;}
 
 .product .rating{margin: 10px 0;}
 .product .rating span {margin-right: 5px;color: #FFC107;}

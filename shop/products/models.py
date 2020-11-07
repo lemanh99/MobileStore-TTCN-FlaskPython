@@ -56,7 +56,7 @@ class Rate(db.Model):
     rate_number = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Rate %r>' % self.name
+        return '<Rate %r>' % self.product_id
 
 
 db.create_all()

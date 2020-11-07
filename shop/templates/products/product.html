@@ -47,8 +47,6 @@
                             <div class="name"><h3>{{ product.name}}</h3></div>
                             <div class="info">
                                 <label>Brand: </label> {{ product.brand.name}}
-                                <br>
-                                <label>ID: </label> {{product.id}}
                             </div>
                             <div class="price">
                                 <label>${{ product.price}}</label>
@@ -61,11 +59,16 @@
                                 {{product.colors}}
                             </div>
                             <div class="rating">
+                                {{ products['average'][product.id][0] }}/5
+                                {% for i in range(products['average'][product.id][0]|int+1) %}
                                 <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
+                                {% endfor %}
+                                {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
                                 <span class="glyphicon glyphicon-star-empty"></span>
+                                {% endfor %}
+                                {% if products['average'][product.id][1] != 0 %}
+                                ({{ products['average'][product.id][1] }})
+                                {% endif %}
                             </div>
                             <div>
                                 <form action="{{url_for('AddCart')}}" method="post">
@@ -117,7 +120,7 @@
                         </div>
                         <div id="review" class="tab-pane fade">
                             <div class="review-form">
-                                {% if l==0 %}
+                                {% if rates.items|length == 0 %}
                                 <h4>Chưa có đánh giá nào.</h4>
                                 {% endif %}
                                 {% for rate in rates %}
@@ -174,7 +177,8 @@
                                         <textarea rows="4" cols="93" name="desc" style="margin-top: 10px"></textarea>
                                         {% if customer == None %}
                                         <h4 style="margin-top: 15;">Bạn cần
-                                            <a href="{{url_for('customer_login_page', page='rate', id=product.id)}}" style="color: blue">
+                                            <a href="{{url_for('customer_login_page', page='rate', id=product.id)}}"
+                                               style="color: blue">
                                                 đăng nhập</a>
                                             để đánh giá</h4>
                                         {% else %}
@@ -234,12 +238,17 @@
                                             </form>
                                         </div>
                                         <div>
-                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star-empty"></span>
+                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;">
+                                                {{ products['average'][product.id][0] }}/5
+                                                {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                <span class="glyphicon glyphicon-star"></span>
+                                                {% endfor %}
+                                                {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                <span class="glyphicon glyphicon-star-empty"></span>
+                                                {% endfor %}
+                                                {% if products['average'][product.id][1] != 0 %}
+                                                ({{ products['average'][product.id][1] }})
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -308,11 +317,17 @@
                                 </div>
                                 <div>
                                     <div class="rating pt-3" style="color: #FFC107; margin-top: 20;">
-                                        <span class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star-empty"></span>
+
+                                        {{ products['average'][product.id][0] }}/5
+                                        {% for i in range(products['average'][product.id][0]|int+1) %}
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        {% endfor %}
+                                        {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        {% endfor %}
+                                        {% if products['average'][product.id][1] != 0 %}
+                                        ({{ products['average'][product.id][1] }})
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -383,6 +398,10 @@
     document.getElementById("5").className = "glyphicon glyphicon-star";
     document.getElementById("select").value = 5;
     }
+
+
+
+
 
 </script>
 {% endblock content%}

@@ -1,5 +1,6 @@
 from flask import render_template, session, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user, logout_user, login_user
+from sympy import im
 
 from shop import app, db, photos
 from .models import Category, Brand, Addproduct, Rate, Register
@@ -17,9 +18,28 @@ def categories():
     categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
     return categories
 
+
 def registers():
     registers = Register.query.join(Rate, (Register.id == Rate.register_id)).all()
     return registers
+
+
+def medium():
+    products = Addproduct.query.filter(Addproduct.stock > 0).all()
+    dst = {}
+    for product in products:
+        rates = Rate.query.filter(Rate.product_id == product.id).all()
+        lenght = len(rates)
+        sumvalue = 0
+        if lenght == 0:
+            average = 5
+        else:
+            for i in rates:
+                sumvalue += i.rate_number
+            average = sumvalue / lenght
+        dst[product.id] = [average, lenght]
+    return dst
+
 
 @app.route('/')
 def home():
@@ -29,21 +49,9 @@ def home():
     products_hot = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.price.desc()).limit(3).all()
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).all()
     products_sell = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.discount.desc()).limit(10).all()
-    products = {'all': products_all, 'hot': products_hot, 'new': products_new, 'sell': products_sell}
+    products = {'all': products_all, 'hot': products_hot, 'new': products_new, 'sell': products_sell,
+                'average': medium()}
     return render_template('customers/index.html', products=products, brands=brands(), categories=categories())
-
-
-# @app.route('/result')
-# def result():
-#     searchword = request.args.get('q')
-#     products = Addproduct.query.msearch(searchword, fields=['name', 'desc'], limit=6)
-#     return render_template('products/result.html', products=products, brands=brands(), categories=categories())
-#
-#
-# @app.route('/product/<int:id>')
-# def single_page(id):
-#     product = Addproduct.query.get_or_404(id)
-#     return render_template('products/single_page.html', product=product, brands=brands(), categories=categories())
 
 
 @app.route('/category')
@@ -52,7 +60,7 @@ def get_all_category():
     products_all = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).paginate(page=page,
                                                                                                          per_page=9)
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
-    products = {'all': products_all, 'new': products_new}
+    products = {'all': products_all, 'new': products_new, 'average': medium()}
     return render_template('products/category.html', products=products, brands=brands(), categories=categories())
 
 
@@ -63,24 +71,11 @@ def get_brand(name):
     brand = Addproduct.query.filter_by(brand=get_brand).paginate(page=page, per_page=9)
 
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
-    products = {'all': brand, 'new': products_new}
+    products = {'all': brand, 'new': products_new, 'average': medium()}
     return render_template('products/category.html', products=products, brand=name, brands=brands(),
                            categories=categories(),
                            get_brand=get_brand)
 
-# @app.route('/category/brand/<string:brand><string:category>')
-# def get_brand_category(brand, category):
-#     page = request.args.get('page', 1, type=int)
-#     get_brand = Brand.query.filter_by(name=brand).first_or_404()
-#     get_category = Category.query.filter_by(name=category).first_or_404()
-#     brand_category = Addproduct.query.filter_by(brand=get_brand).paginate(page=page, per_page=9)
-#
-#     brand_category1 = brand_category.query.filter_by(category=get_category).paginate(page=page, per_page=9)
-#
-#     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
-#     products = {'all': brand_category1, 'new': products_new}
-#     return render_template('products/category.html', products=products, brand=brand, category=category, brands=brands(),
-#                            categories=categories(), get_brand_category=get_brand_category)
 
 @app.route('/categories/<string:name>')
 def get_category(name):
@@ -88,7 +83,7 @@ def get_category(name):
     get_cat = Category.query.filter_by(name=name).first_or_404()
     get_cat_prod = Addproduct.query.filter_by(category=get_cat).paginate(page=page, per_page=9)
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
-    products = {'all': get_cat_prod, 'new': products_new}
+    products = {'all': get_cat_prod, 'new': products_new, 'average': medium()}
     return render_template('products/category.html', products=products, get_cat_prod=name, brands=brands(),
                            categories=categories(),
                            get_cat=get_cat)
@@ -270,13 +265,14 @@ def deleteproduct(id):
     flash(f'Can not delete the product', 'success')
     return redirect(url_for('admin'))
 
+
 @app.route('/addrate', methods=['GET', 'POST'])
 def addrate():
     form = Rates(request.form)
     products_hot = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.price.desc()).limit(3).all()
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).all()
     products_sell = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.discount.desc()).limit(10).all()
-    products = {'hot': products_hot, 'new': products_new, 'sell': products_sell}
+    products = {'hot': products_hot, 'new': products_new, 'sell': products_sell, 'average': medium()}
     product_id = -1
     if request.method == "POST":
         register_id = request.form.get('register_id')
@@ -294,6 +290,7 @@ def addrate():
     return render_template('products/product.html', title='Add rate', form=form, products=products, rates=rates,
                            product=product, brands=brands(), registers=registers(), categories=categories())
 
+
 @app.route('/detail/id_<int:id>')
 def detail(id):
     kt = False
@@ -306,30 +303,33 @@ def detail(id):
                 kt = True
     form = Rates(request.form)
     rates = Rate.query.filter(Rate.product_id == id).order_by(Rate.id.desc()).all()
-    l = len(rates)
     products_hot = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.price.desc()).limit(3).all()
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
     products_sell = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.discount.desc()).limit(10).all()
-    products = {'hot': products_hot, 'new': products_new, 'sell': products_sell}
+    products = {'hot': products_hot, 'new': products_new, 'sell': products_sell, 'average': medium()}
     product = Addproduct.query.get_or_404(id)
     # products = Addproduct.query.filter_by(id='id')
     return render_template('products/product.html', product=product, products=products, brands=brands(), form=form,
-                           rates=rates, registers=registers(), categories=categories(), customer=customer, kt=kt, l=l)
+                           rates=rates, registers=registers(), categories=categories(), customer=customer, kt=kt)
+
 
 @app.route('/category/discount/<int:start>-<int:end>')
 def get_discount(start, end):
     page = request.args.get('page', 1, type=int)
-    product_discount = Addproduct.query.filter(Addproduct.discount >= start, Addproduct.discount < end)\
+    product_discount = Addproduct.query.filter(Addproduct.discount >= start, Addproduct.discount < end) \
         .order_by(Addproduct.id.desc()).paginate(page=page, per_page=9)
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
-    products = {'all': product_discount, 'new': products_new}
+    products = {'all': product_discount, 'new': products_new, 'average': medium()}
     return render_template('products/category.html', products=products, brands=brands(), categories=categories())
-# @app.route('/search', methods=['GET', 'POST'])
-# def search():
-#     print("dat")
-#     value = request.form['searchs']
-#     search = "%{}%".format(value)
-#     products = Addproduct.query.filter(Addproduct.name.like(search)).all()
-#     print(search)
-#
-#     print(products)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    value = request.form['search']
+    search = "%{}%".format(value)
+    page = request.args.get('page', 1, type=int)
+    product = Addproduct.query.filter(Addproduct.name.like(search)).paginate(page=page, per_page=9)
+    products = {'all': product, 'average': medium()}
+    print(len(products['all'].items))
+    return render_template('products/category.html', get_search=value, products=products, brands=brands(),
+                           categories=categories())
