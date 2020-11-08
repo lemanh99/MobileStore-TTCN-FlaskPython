@@ -57,7 +57,7 @@ def customer_manager():
                            customers=customers)
 
 
-@app.route('/orders')
+@app.route('/admin/orders')
 def orders():
     if 'email' not in session:
         flash(f'please login first', 'danger')
@@ -221,6 +221,9 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = Admin.query.filter_by(email=form.email.data).first()
+        print(form.email.data)
+        print('user')
+        print(user)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
             flash(f'welcome {form.email.data} you are logedin now', 'success')
