@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="caption">
-                        <div class="name"><h3><a href="product.html">{{product.name}}</a></h3></div>
+                        <div class="name"><h3><a href="">{{product.name}}</a></h3></div>
                         <div class="info">
                             <ul>
                                 <li>Brand: {{ product.brand }}</li>
@@ -97,7 +97,7 @@
                             <td style="text-align:right">{{"%.2f"|format(subtotals-discounttotal)}}</td>
                         </tr>
                     </table>
-                    <center><a href="#" class="btn btn-2" style="padding: 3px 26px; margin-bottom: 20px;">Checkout</a>
+                    <center><a href="{{ url_for('get_order') }}" class="btn btn-2" style="padding: 3px 26px; margin-bottom: 20px;">Checkout</a>
                     </center>
                 </div>
             </div>

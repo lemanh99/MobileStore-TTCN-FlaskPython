@@ -1,0 +1,154 @@
+{% extends 'admin/layout.html' %}
+{% block content  %}
+{%include 'admin/header.html'%}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="row justify-content-center">
+            <div style=" margin-top: 20px; margin-bottom: -45px; ">{%include '_messages.html'%}</div>
+        </div>
+        <div class="container mt-5">
+            <table class="table table-sm table-condensed table-striped ">
+                <thead>
+                <th>Sr</th>
+                <th>Name customer</th>
+                <th>Invoice</th>
+                <th>Status</th>
+                <th>Date_create</th>
+                <th>Oders</th>
+                <th>Accept</th>
+                <th>Delete</th>
+                </thead>
+                <tbody>
+                {%for order in orders%}
+                <tr>
+                    <td>{{loop.index}}</td>
+
+                    {%for customer in customers%}
+                    {% if customer.id == order.customer_id %}
+                    {% set customer_name = customer.first_name +" "+customer.last_name %}
+                    <td>{{customer_name}}</td>
+                    {% endif %}
+                    {%endfor%}
+                    <td>{{order.invoice}}</td>
+                    <td>{{order.status}}</td>
+                    <td>{{order.date_created}}</td>
+                    <td>
+                        <button type="button" class="btn  btn-info" data-toggle="modal"
+                                data-target="#details-{{order.id}}">
+                            Details
+                        </button>
+                    </td>
+                    <td>
+                        {% if order.status == "Pending" %}
+                        <button type="button" class="btn  btn-success" data-toggle="modal"
+                                data-target="#accept-{{order.id}}" style="margin-left: -5px;">
+                            Accept
+                        </button>
+                        {% else %}
+                        <p class="text-green">Accepted</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.status == "Pending" %}
+                        <button type="button" class="btn  btn-danger" data-toggle="modal"
+                                data-target="#delete-{{order.id}}">
+                            Delete
+                        </button>
+                        {% else %}
+                        <p class="text-green"></p>
+                        {% endif %}
+
+                    </td>
+                </tr>
+                <!-- Modal -->
+                <div class="modal fade" id="accept-{{order.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">{{'Order invoice ' +
+                                    order.invoice}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="text-danger">Are you want to accept this order ?</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{url_for('accept_order', id=order.id)}}" method="POST">
+                                    <button type="submit" class="btn btn-success">Accept</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="delete-{{order.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{'Order invoice ' +
+                                    order.invoice}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="text-danger">Are you want to delete this order</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{url_for('delete_order', id=order.id)}}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="details-{{order.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{'Order invoice ' +
+                                    order.invoice}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% for key, product in order.orders.items() %}
+                                <h5>{{"Name: " + product.name}}</h5>
+                                <h5>{{"Brand: " + product.brand}}</h5>
+                                <h5>Price: {{product.price}}</h5>
+                                <h5>Discount: {{product.discount}}%</h5>
+                                <h5>Quantity: {{product.quantity}}</h5>
+                                <h5>{{"Colors: " + product.colors}}</h5>
+                                {% endfor %}
+                                <h5>Day: {{order.date_created}}</h5>
+                                <h5>{{"Delivery address:" + order.address}}</h5>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+{%include 'admin/footer.html'%}
+{% endblock content %}

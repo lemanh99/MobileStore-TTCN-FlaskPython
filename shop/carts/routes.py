@@ -1,5 +1,8 @@
 from flask import render_template, session, request, redirect, url_for, flash, current_app
+from flask_login import current_user
+
 from shop import db, app
+from shop.customers.models import CustomerOrder
 from shop.products.models import Category, Brand, Addproduct
 from shop.products.routes import brands, categories
 import json
@@ -109,6 +112,11 @@ def deleteitem(id):
 def clearcart():
     try:
         session.pop('Shoppingcart', None)
+        if current_user.is_authenticated:
+            orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+            for order in orders:
+                db.session.delete(order)
+                db.session.commit()
         return redirect(url_for('getCart'))
     except Exception as e:
         print(e)

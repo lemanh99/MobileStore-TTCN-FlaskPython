@@ -10,6 +10,8 @@
                     <li><a href="{{url_for('update_account')}}">My Account</a></li>
                     {% if detail_customer %}
                     <li><a href="{{url_for('update_account')}}">Information Account</a></li>
+                    {% elif orders %}
+                    <li><a href="{{url_for('payment_history')}}">Payment History</a></li>
                     {% elif detail_password_customer %}
                     <li><a href="{{url_for('change_password')}}">Change Password</a></li>
                     {% else %}
@@ -29,9 +31,11 @@
                             {% else %}
                             <li><a href="{{url_for('update_account')}}">Edit Account</a></li>
                             {% endif %}
-
-                            <li><a href="">Payment History</a></li>
-
+                            {% if orders %}
+                            <li><a href="{{url_for('payment_history')}}" style="color: red;">Payment History</a></li>
+                            {% else %}
+                            <li><a href="{{url_for('payment_history')}}">Payment History</a></li>
+                            {% endif %}
                             {% if detail_password_customer %}
                             <li><a href="{{url_for('change_password')}}" style="color: red;">Change Password</a></li>
                             {% else %}
@@ -94,6 +98,45 @@
 
                     </div>
                     {% endif %}
+                    {% if orders %}
+                    <div class="heading"><h4>Payment history</h4></div>
+                    <div class="content">
+                        <table class="table table-sm">
+                            <thead>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+
+                            </thead>
+                            <tbody>
+                            {% for order in orders %}
+                            {% for key, product in order.orders.items() %}
+                            {% set discount =(product.discount/100) * product.price |float %}
+                            {% set subtotal = product.quantity|int * product.price|float %}
+                            <tr>
+                                <td> {{order.date_created}}</td>
+                                <td>{{product.name}}</td>
+                                <td>
+                                    {{product.quantity}}
+                                </td>
+                                <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
+                                {% if order.status == "Pending" %}
+                                <td><p style="color:red;">{{order.status}}</p></td>
+                                {% elif order.status == "Cancelled" %}
+                                <td><p style="color:#847713;">{{order.status}}</p></td>
+                                {% else %}
+                                <td><p style="color:#32c67b;">{{order.status}}</p></td>
+                                {% endif %}
+
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
                     {% if detail_password_customer %}
                     <div class="heading"><h4>Change Password</h4></div>
                     <div class="content">
@@ -101,19 +144,22 @@
                         <form method="post" action="">
                             <div class="form-group">
                                 <span> Old Pasword: </span>
-                                <input type="password" class="form-control" name="oldpassword"  required>
+                                <input type="password" class="form-control" name="oldpassword" required>
                             </div>
                             <div class="form-group">
                                 <span> New Password: </span>
-                                <input type="password" class="form-control" name="newpassword" id="newpassword" required>
+                                <input type="password" class="form-control" name="newpassword" id="newpassword"
+                                       required>
                             </div>
                             <div class="form-group">
                                 <span> Retype New Password: </span>
-                                <input type="password" class="form-control" name="renewpassword" id="renewpassword" onkeyup='check();' required>
+                                <input type="password" class="form-control" name="renewpassword" id="renewpassword"
+                                       onkeyup='check();' required>
                                 <span id='message'></span>
                             </div>
                             <button type="submit" class="btn btn-info"
-                                    style="padding: 5px 26px; background-color: #e51534;" onclick="return Validate()">Change Password
+                                    style="padding: 5px 26px; background-color: #e51534;" onclick="return Validate()">
+                                Change Password
                             </button>
                         </form>
 
@@ -145,5 +191,7 @@ function Validate() {
         }
         return true;
     }
+
+
 </script>
 {% endblock content%}

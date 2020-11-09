@@ -13,6 +13,8 @@
                     {% elif get_cat_prod %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
                     <li><a href="{{url_for('get_category',name=get_cat_prod, page=1)}}">{{ get_cat_prod }}</a></li>
+                    {% elif get_search %}
+                    <li><a href="{{url_for('get_all_category', page=1)}}">Search for '{{ get_search }}'</a></li>
                     {% else %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
                     {% endif %}
@@ -21,53 +23,72 @@
         </div>
         <div class="row">
             <div id="main-content" class="col-md-8">
+                {%if products['all'].items|length <=0 %}
+                {% if get_search %}
+                <h2>Không tìm thấy kết quả cho '{{ get_search }} '</h2>
+                {% else %}
+                <h2>Không có sản phẩm phù hợp.</h2>
+                {% endif %}
+                {% else %}
                 {% for i in range(0,9,3) %}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="products">
                             {% for product in products['all'].items[i:i+3] %}
                             <div class="col-lg-4 col-md-4 col-xs-12">
-                                <div class="product-block">
-                                    <div class="product-img">
+                                <div class="product-block" style="height: 435px">
+                                    <div class="product-img" style="margin:-15">
                                         <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                             alt="{{ product.name}}"></div>
+                                             alt="{{ product.name}}" style="height:178px; weight:178px">
+                                    </div>
                                     <div class="product-content">
-                                        <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                                        <div><h5 style="height: 35px;margin-top: -10 ;"><a
+                                                href="{{url_for('detail', id = product.id)}}"
+                                                class="product-title">
+                                            {{ product.name }}</a></h5>
+                                        </div>
                                         <div class="product-meta">
-                                            <a href="#" class="product-price">${{ product.price }}</a>
-                                            <a href="#" class="discounted-price">${{ product.price -
-                                                product.price*product.discount }}</a>
-                                        </div>
+                                            <div style="height: 60px;">
+                                                <a href="#" class="product-price">${{ product.price }}</a>
+                                                <a href="#" class="discounted-price">${{ product.price -
+                                                    product.price*product.discount }}</a>
+                                                {% if product.discount >0 %}
+                                                <span class="offer-price">{{product.discount}}%off</span>
+                                                {% else %}
+                                                <span class="offer-price"></span>
+                                                {% endif %}
+                                            </div>
 
-                                        {% if product.discount >0 %}
-                                        <span class="offer-price">{{product.discount}}%off</span>
-                                        {% else %}
-                                        <span class="offer-price"></span>
-                                        {% endif %}
-                                        <div class="shopping-btn">
-                                            <form action="{{url_for('AddCart')}}" method="post">
-                                                <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
-                                                <button href="#" class="product-btn btn-cart"><i
-                                                        class="fa fa-shopping-cart"></i></button>
-                                                <BR>
-                                                <input type="hidden" name="product_id" value="{{product.id}}">
-                                                <input type="hidden" name="quantity" value="1" min="1" max="20">
-                                                {% set colors = product.colors.split(',') %}
-                                                <select name="colors" style="visibility: hidden;">
-                                                    {% for color in colors %}
-                                                    {% set col = color.split(':') %}
-                                                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                            <div class="shopping-btn">
+                                                <form action="{{url_for('AddCart')}}" method="post">
+                                                    <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                                    <button href="#" class="product-btn btn-cart"><i
+                                                            class="fa fa-shopping-cart"></i></button>
+                                                    <BR>
+                                                    <input type="hidden" name="product_id" value="{{product.id}}">
+                                                    <input type="hidden" name="quantity" value="1" min="1" max="20">
+                                                    {% set colors = product.colors.split(',') %}
+                                                    <select name="colors" style="visibility: hidden;">
+                                                        {% for color in colors %}
+                                                        {% set col = color.split(':') %}
+                                                        <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </form>
+                                            </div>
+                                            <div>
+                                                <div class="rating pt-3" style="color: #FFC107; margin-top: -30;">
+                                                    {{ products['average'][product.id][0] }}/5
+                                                    {% for i in range(products['average'][product.id][0]|int+1) %}
+                                                    <span class="glyphicon glyphicon-star"></span>
                                                     {% endfor %}
-                                                </select>
-                                            </form>
-                                        </div>
-                                        <div>
-                                            <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star"></span><span
-                                                    class="glyphicon glyphicon-star-empty"></span>
+                                                    {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                                    {% endfor %}
+                                                    {% if products['average'][product.id][1] != 0 %}
+                                                    ({{ products['average'][product.id][1] }})
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -78,6 +99,7 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% endif %}
                 {% if brand %}
                 <div class="row">
                     <div class="col text-center">
@@ -145,12 +167,47 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
+                {% elif get_search %}
                 <div class="row">
                     <div class="col text-center">
                         <div class="st-pagination">
                             <ul class="pagination">
                                 {% if products['all'].has_prev %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.prev_num)}}"
+                                       aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                                </li>
+                                {% endif %}
+                                {% if products["all"].total> 9 %}
+                                {% for page_num in products["all"].iter_pages(left_edge=1, right_edge=2,
+                                left_current=1,right_current=2) %}
+                                {% if page_num %}
+                                {% if products["all"].page == page_num %}
+                                <li class="active"><a
+                                        href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                </li>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% if products["all"].has_next %}
+                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.next_num)}}"
+                                       aria-label="Next"><span
+                                        aria-hidden="true">Next</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="st-pagination">
+                            <ul class="pagination">
+                                {% if products.has_prev %}
                                 <li><a href="{{url_for('get_all_category', page=products.prev_num)}}"
                                        aria-label="previous"><span aria-hidden="true">Previous</span></a>
                                 </li>
@@ -193,67 +250,58 @@
                 <div class="widget wid-discouts">
                     <div class="heading"><h4>DISCOUNTS</h4></div>
                     <div class="content">
-                        <label class="checkbox"><input type="checkbox" name="discount" checked="">Upto - 10%
-                            (20)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">40% - 50% (5)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">30% - 20% (7)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">10% - 5% (2)</label>
-                        <label class="checkbox"><input type="checkbox" name="discount">Other(50)</label>
+                        <ul>
+                            <li><a href="{{url_for('get_discount', start = 0, end = 20)}}">< 20%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 20, end = 40)}}">20 - 40%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 40, end = 60)}}">40 - 60%</a></li>
+                            <li><a href="{{url_for('get_discount', start = 60, end = 100)}}">> 60%</a></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="widget wid-brand">
                     <div class="heading"><h4>BRAND</h4></div>
                     <div class="content">
-                        {% for brand in brands %}
-                        <label class="checkbox"><input type="checkbox" name="{{ brand.name }}">{{ brand.name }}</label>
-                        {% endfor %}
+                        <ul>
+                            {% for brand in brands %}
+                            <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
                 <div class="widget wid-product">
                     <div class="heading"><h4>Mới nhất</h4></div>
                     <div class="content">
                         {% for product in products["new"] %}
-                        <div class="product-block">
+                        <div class="product-block" style="height: 430px;">
                             <div class="product-img">
                                 <img src="{{ url_for('static', filename='images/'+product.image_2) }}"
-                                     alt="{{ product.name}}" style="padding-left: 45px;"></div>
+                                     alt="{{ product.name}}"
+                                     style="padding:0 78px 0 58px; width:100%; text-align:center;height:100%;"></div>
                             <div class="product-content">
-                                <h5><a href="#" class="product-title">{{ product.name }}</a></h5>
+                                <h5 style="height: 35px;margin-top:-10">
+                                    <a href="{{url_for('detail', id = product.id)}}"
+                                       class="product-title">{{ product.name }}</a></h5>
                                 <div class="product-meta">
                                     <a href="#" class="product-price">${{ product.price }}</a>
                                     <a href="#" class="discounted-price">${{ product.price -
                                         product.price*product.discount }}</a>
                                 </div>
-
-                                {% if product.discount >0 %}
-                                <span class="offer-price">{{product.discount}}%off</span>
-                                {% else %}
-                                <span class="offer-price"></span>
-                                {% endif %}
                                 <div class="shopping-btn">
-                                    <form action="{{url_for('AddCart')}}" method="post">
-                                        <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
-                                        <button href="#" class="product-btn btn-cart"><i
-                                                class="fa fa-shopping-cart"></i></button>
-                                        <BR>
-                                        <input type="hidden" name="product_id" value="{{product.id}}">
-                                        <input type="hidden" name="quantity" value="1" min="1" max="20">
-                                        {% set colors = product.colors.split(',') %}
-                                        <select name="colors" style="visibility: hidden;">
-                                            {% for color in colors %}
-                                            {% set col = color.split(':') %}
-                                            <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </form>
+                                    <a href="#" class="product-btn btn-like"><i class="fa fa-heart"></i></a>
+                                    <a href="#" class="product-btn btn-cart"><i class="fa fa-shopping-cart"></i></a>
                                 </div>
                                 <div>
-                                    <div class="rating pt-3" style="color: #FFC107; margin-top: -20;"><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star"></span><span
-                                            class="glyphicon glyphicon-star-empty"></span>
+                                    <div class="rating pt-3" style="color: #FFC107; margin-top: 20;">
+                                        {{ products['average'][product.id][0] }}/5
+                                        {% for i in range(products['average'][product.id][0]|int+1) %}
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        {% endfor %}
+                                        {% for i in range(products['average'][product.id][0]|int + 1, 5) %}
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        {% endfor %}
+                                        {% if products['average'][product.id][1] != 0 %}
+                                        ({{ products['average'][product.id][1] }})
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

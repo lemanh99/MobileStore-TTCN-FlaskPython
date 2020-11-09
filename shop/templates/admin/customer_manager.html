@@ -1,0 +1,139 @@
+{% extends 'admin/layout.html' %}
+{% block content  %}
+{%include 'admin/header.html'%}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="row justify-content-center">
+            <div style=" margin-top: 20px; margin-bottom: -45px; ">{%include '_messages.html'%}</div>
+        </div>
+        <div class="container mt-5">
+            <table class="table table-sm table-condensed table-striped ">
+                <thead>
+                <th>Sr</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>email</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Date_create</th>
+                <th>Lock</th>
+                <th>Delete</th>
+                </thead>
+                <tbody>
+                {%for customer in customers%}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>{{customer.username}}</td>
+                    <td>{{customer.first_name + ' ' + customer.last_name}}</td>
+                    <td>{{customer.email}}</td>
+                    <td>{{customer.phone_number}}</td>
+                    <td>{{customer.gender}}</td>
+                    <td>{{customer.date_created}}</td>
+                    <td>
+                        {% if customer.lock == 0 %}
+                        <button type="button" class="btn  btn-dark" data-toggle="modal"
+                                data-target="#lock-{{customer.id}}">
+                            Lock
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn  btn-success" data-toggle="modal"
+                                data-target="#unlock-{{customer.id}}">
+                            Unlock
+                        </button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button type="button" class="btn  btn-danger" data-toggle="modal"
+                                data-target="#staticBackdrop-{{customer.id}}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                <!-- Modal -->
+                <div class="modal fade" id="lock-{{customer.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">{{customer.username}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="text-danger">Are you sure lock the customer {{customer.username}}</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{url_for('lock_customer', id=customer.id)}}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Lock</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="unlock-{{customer.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">{{customer.username}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="text-danger">Are you want to unlock the customer {{customer.username}}</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{url_for('unlock_customer', id=customer.id)}}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Unlock</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="detail-{{customer.id}}" data-backdrop="static" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">{{customer.username}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="text-danger">Are sure delete the customer {{customer.username}}</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning  btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{url_for('delete_customer', id=customer.id)}}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+{%include 'admin/footer.html'%}
+{% endblock content %}

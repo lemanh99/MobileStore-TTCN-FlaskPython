@@ -1,0 +1,69 @@
+{% extends 'admin/layout.html' %}
+{% block content %}
+{%include 'admin/header.html'%}
+{% include "_messages.html" %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <h2 class="text-center bg-info">Update products</h2>
+            {% from "_formhelpers.html" import render_field %}
+            <form method="POST" enctype="multipart/form-data">
+                {{ render_field(form.name, class="form-control") }}
+                {{ render_field(form.price, class="form-control") }}
+                {{ render_field(form.discount, class="form-control") }}
+                {{ render_field(form.stock, class="form-control") }}
+                <label for="category">Add a category</label>
+                <select name="category" id="category" class="form-control" onchange='myFunction()' required>
+                    <option value="{{product.category_id}}">{{product.category.name}}</option>
+                    {% for category in categories %}
+                    <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                </select>
+                <label for="brand">Add a brand</label>
+                <select name="brand" id="brand" class="form-control" required>
+                    <option value="{{product.brand_id}}">{{product.brand.name}}</option>
+                    {% for brand in brands %}
+                    <option value="{{brand.id}}">{{brand.name}}</option>
+                    {% endfor %}
+                </select>
+
+
+                {{ render_field(form.colors, class="form-control") }}
+                {{ render_field(form.description, class="form-control", rows="10") }}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4"><input type="file" name="image_1" id="image_1">
+                            <a href="{{url_for('static',filename='images/' + product.image_1)}}"> </a>
+                        </div>
+                        <div class="col-md-4"><input type="file" name="image_2" id="image_2">
+                            <a href="{{url_for('static',filename='images/' + product.image_2)}}"></a>
+                        </div>
+
+                        <div class="col-md-4"><input type="file" name="image_3" id="image_3">
+                            <a href="{{url_for('static',filename='images/' + product.image_3)}}"> </a>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-outline-info mt-4">Update a product</button>
+            </form>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+<script>
+function myFunction() {
+     $("#brand option").remove();
+     var newoptions = "";
+     {% for brand in brands %}
+     if(document.getElementById("category").value == {{brand.category_id}}){
+        newoptions+="<option value='{{brand.id}}'>{{brand.name}}</option>";
+     }
+     {% endfor %}
+     $("#brand").append(newoptions);
+     }
+
+</script>
+{%include 'admin/footer.html'%}
+{% endblock content %}

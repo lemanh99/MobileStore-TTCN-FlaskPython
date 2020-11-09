@@ -16,12 +16,13 @@ class Register(db.Model, UserMixin):
     last_name = db.Column(db.String(50), unique=False)
     email = db.Column(db.String(50), unique=True)
     phone_number = db.Column(db.String(50), unique=True)
-    gender = db.Column(db.String(5), unique = False)
+    gender = db.Column(db.String(5), unique=False)
     password = db.Column(db.String(200), unique=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    lock = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return '<Register %r>' % self.name
+        return '<Register %r>' % self.username
 
 
 class JsonEcodedDict(db.TypeDecorator):
@@ -43,11 +44,12 @@ class JsonEcodedDict(db.TypeDecorator):
 class CustomerOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     invoice = db.Column(db.String(20), unique=True, nullable=False)
-    status = db.Column(db.String(20), default='Pending', nullable=False)
+    status = db.Column(db.String(20), default=None, nullable=True)
+    address = db.Column(db.String(200), unique=False, nullable=True)
     customer_id = db.Column(db.Integer, unique=False, nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     orders = db.Column(JsonEcodedDict)
-
+    date_created = db.Column(db.DateTime, unique=False, nullable=True, default=datetime.utcnow)
     def __repr__(self):
         return '<CustomerOrder %r>' % self.invoice
 

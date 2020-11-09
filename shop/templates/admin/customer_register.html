@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{%block content%}
+{% include 'admin/header.html' %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        {% from "_formhelpers.html" import render_field %}
+        <div id="page-content" class="single-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 "></div>
+                    <div class="col-md-6 " style="align-items: center;">
+                        <div class="register-box" style="width: 700px;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="login-box-msg"
+                                       style="font-weight: bold; font-size: larger; color: #007bff;">Add
+                                        new Customer</p>
+                                    {% include '_messages.html'%}
+                                    <form method="post" enctype="multipart/form-data">
+                                        {{ form.csrf_token }}
+                                        <div>
+                                            {{ render_field(form.username, class="form-control")}}
+                                            {{ render_field(form.first_name, class="form-control")}}
+                                            {{ render_field(form.last_name, class="form-control")}}
+                                            {{ render_field(form.email, class="form-control")}}
+                                            {{ render_field(form.phone_number, class="form-control")}}
+                                            {{ render_field(form.gender)}}
+                                            {{ render_field(form.password, class="form-control")}}
+                                            {{ render_field(form.confirm, class="form-control")}}
+                                        </div>
+                                        <div class="row justify-content-center mb-3">
+                                            <div class="col-4">
+                                                <button type="submit" class="btn btn-primary btn-block">Add</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div><!-- /.card -->
+                        </div>
+                    </div>
+                    <div class="col-md-3 "></div>
+                </div>
+            </div>
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+{% include 'admin/footer.html' %}
+{% endblock content%}
