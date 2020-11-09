@@ -119,6 +119,7 @@ def updatebrand(id):
     updatebrand = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method == "POST":
+        print("Brand", brand)
         updatebrand.name = brand
         flash(f'The brand {updatebrand.name} was updated', 'success')
         db.session.commit()
@@ -249,7 +250,6 @@ def updateproduct(id):
 
     if request.method == "POST":
         product.name = form.name.data
-        print("Kiem tra", form.price.data)
         product.price = form.price.data
         product.discount = form.discount.data
         product.stock = form.stock.data
@@ -378,6 +378,5 @@ def search():
     page = request.args.get('page', 1, type=int)
     product = Addproduct.query.filter(Addproduct.name.like(search)).paginate(page=page, per_page=9)
     products = {'all': product, 'average': medium()}
-    print(len(products['all'].items))
     return render_template('products/category.html', get_search=value, products=products, brands=brands(),
                            categories=categories())

@@ -17,7 +17,7 @@
                             <span>Category: </span>
                             {% for category in categories %}
                             {% if updatebrand.category_id == category.id %}
-                            <input type="text" name="brand" class="form-control" value="{{category.name}}"
+                            <input type="text" name="category" class="form-control" value="{{category.name}}"
                                    readonly>
                             {% endif %}
                             {% endfor %}

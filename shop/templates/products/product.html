@@ -120,33 +120,34 @@
                         </div>
                         <div id="review" class="tab-pane fade">
                             <div class="review-form">
-                                {% if rates.items|length == 0 %}
+                                {% if rates|length == 0 %}
                                 <h4>Chưa có đánh giá nào.</h4>
-                                {% endif %}
-                                {% for rate in rates %}
-                                {% if product.id == rate.product_id %}
-                                <div>
-                                    <div style="font-weight: bold; color: black">{{rate.register.username}}:</div>
-                                    <div>
-                                        <div class="rating" style="color: #FFC107">
-                                            {% for i in range(1,rate.rate_number+1) %}
-                                            <span class="glyphicon glyphicon-star"></span>
-                                            {% endfor %}
-                                            {% for i in range(rate.rate_number,5) %}
-                                            <span class="glyphicon glyphicon-star-empty"></span>
-                                            {% endfor %}
+                                {% else %}
+                                    {% for rate in rates %}
+                                        {% if product.id == rate.product_id %}
+                                        <div>
+                                            <div style="font-weight: bold; color: black">{{rate.register.username}}:</div>
+                                            <div>
+                                                <div class="rating" style="color: #FFC107">
+                                                    {% for i in range(1,rate.rate_number+1) %}
+                                                    <span class="glyphicon glyphicon-star"></span>
+                                                    {% endfor %}
+                                                    {% for i in range(rate.rate_number,5) %}
+                                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div>{{rate.desc}}</div>
                                         </div>
-                                    </div>
-                                    <div>{{rate.desc}}</div>
-                                </div>
-                                <div style="text-align:right">{{rate.time}}</div>
-                                <div style="margin-top: -20px; text-align: center;">
-                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                    - - - - - - - - - - - - - - -
-                                </div>
+                                        <div style="text-align:right">{{rate.time}}</div>
+                                        <div style="margin-top: -20px; text-align: center;">
+                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            - - - - - - - - - - - - - - -
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endif %}
-                                {% endfor %}
                                 {% if kt %}
                                 <h4>Bạn đã đánh giá. Bạn chỉ được đánh giá một lần.</h4>
                                 {% else %}
