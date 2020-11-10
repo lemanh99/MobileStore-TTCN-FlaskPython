@@ -69,15 +69,18 @@ $ Cấu trúc thư mục
 │   └── __init__.py
 ├── images
 │   ├── use_case.png
+│   ├── GUIAdmin.png
+│   ├── GUIUser.png
 ├── database
 │   ├── myshop.sql
 └── requirements.txt
 └── README.md
+└── run.py
 
 ```
 
 <a id="p4"></a> 
 # Tài liệu tham khảo
 
- 1. Template : https://easetemplate.com/downloads/online-mobile-store-shopping-website-template/
+ 1. Template : [https://easetemplate.com/downloads/online-mobile-store-shopping-website-template/](https://easetemplate.com/downloads/online-mobile-store-shopping-website-template/)
 2. Youtube: [https://www.youtube.com/watch?v=o9TwipumGoU&list=PLYPlvTh05MsxJja9bzQCSTDu4hnEv5N](https://www.youtube.com/watch?v=o9TwipumGoU&list=PLYPlvTh05MsxJja9bzQCSTDu4hnEv5N_u&index=1)

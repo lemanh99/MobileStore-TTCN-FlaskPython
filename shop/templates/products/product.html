@@ -121,37 +121,37 @@
                         <div id="review" class="tab-pane fade">
                             <div class="review-form">
                                 {% if rates|length == 0 %}
-                                <h4>Chưa có đánh giá nào.</h4>
+                                <h4>There are no reviews yet.</h4>
                                 {% else %}
-                                    {% for rate in rates %}
-                                        {% if product.id == rate.product_id %}
-                                        <div>
-                                            <div style="font-weight: bold; color: black">{{rate.register.username}}:</div>
-                                            <div>
-                                                <div class="rating" style="color: #FFC107">
-                                                    {% for i in range(1,rate.rate_number+1) %}
-                                                    <span class="glyphicon glyphicon-star"></span>
-                                                    {% endfor %}
-                                                    {% for i in range(rate.rate_number,5) %}
-                                                    <span class="glyphicon glyphicon-star-empty"></span>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            <div>{{rate.desc}}</div>
+                                {% for rate in rates %}
+                                {% if product.id == rate.product_id %}
+                                <div>
+                                    <div style="font-weight: bold; color: black">{{rate.register.username}}:</div>
+                                    <div>
+                                        <div class="rating" style="color: #FFC107">
+                                            {% for i in range(1,rate.rate_number+1) %}
+                                            <span class="glyphicon glyphicon-star"></span>
+                                            {% endfor %}
+                                            {% for i in range(rate.rate_number,5) %}
+                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                            {% endfor %}
                                         </div>
-                                        <div style="text-align:right">{{rate.time}}</div>
-                                        <div style="margin-top: -20px; text-align: center;">
-                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                            - - - - - - - - - - - - - - -
-                                        </div>
-                                        {% endif %}
-                                    {% endfor %}
+                                    </div>
+                                    <div>{{rate.desc}}</div>
+                                </div>
+                                <div style="text-align:right">{{rate.time}}</div>
+                                <div style="margin-top: -20px; text-align: center;">
+                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                    - - - - - - - - - - - - - - -
+                                </div>
+                                {% endif %}
+                                {% endfor %}
                                 {% endif %}
                                 {% if kt %}
-                                <h4>Bạn đã đánh giá. Bạn chỉ được đánh giá một lần.</h4>
+                                <h4>Thank you for the rating. You are only evaluated once.</h4>
                                 {% else %}
-                                <h4>Đánh giá của bạn về sản phẩm của chúng tôi:</h4>
+                                <h4>Your review of our product:</h4>
                                 <div>
                                     {% from "_formhelpers.html" import render_field %}
                                     <form action="{{url_for('addrate')}}" method="POST" enctype="multipart/form-data">
@@ -177,11 +177,11 @@
                                         </div>
                                         <textarea rows="4" cols="93" name="desc" style="margin-top: 10px"></textarea>
                                         {% if customer == None %}
-                                        <h4 style="margin-top: 15;">Bạn cần
+                                        <h4 style="margin-top: 15;">You need
                                             <a href="{{url_for('customer_login_page', page='rate', id=product.id)}}"
-                                               style="color: blue">
-                                                đăng nhập</a>
-                                            để đánh giá</h4>
+                                               style="color: blue">log in
+                                            </a> to rate
+                                        </h4>
                                         {% else %}
                                         <input class="btn btn-default" style="margin-top: 15px" type="submit"
                                                value="Đánh giá">
@@ -399,6 +399,8 @@
     document.getElementById("5").className = "glyphicon glyphicon-star";
     document.getElementById("select").value = 5;
     }
+
+
 
 
 

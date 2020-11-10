@@ -1058,7 +1058,12 @@ ul.timeline > li > .timeline-panel:after { border-left-width: 0; border-right-wi
 .widget.wid-product .wrapper {vertical-align: middle;text-align: left;padding-bottom: 7px;margin-top: 22px;display: inline-block;}
 
 .widget.wid-discouts {}
-.widget.wid-discouts .checkbox, .widget.wid-brand .checkbox{font-weight: 500;}
+.widget.wid-discouts ul li{margin-bottom: 8px;border-bottom: 1px dashed #aaa;padding-bottom: 7px;}
+.widget.wid-discouts ul li a{font-size: 17px;}
+
+.widget.wid-brand {}
+.widget.wid-brand ul li{margin-bottom: 8px;border-bottom: 1px dashed #aaa;padding-bottom: 7px;}
+.widget.wid-brand ul li a{font-size: 17px;}
 
 .widget.wid-type {}
 .widget.wid-type select{width: 100%; border: 1px solid #aaa;margin-top: 20px;padding: 3px;}

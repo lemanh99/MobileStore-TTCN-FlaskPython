@@ -31,13 +31,40 @@
 <body>
 {%block content%}
 {% endblock content%}
+
+<div>
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            xfbml            : true,
+            version          : 'v8.0'
+          });
+        };
+
+        (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <!-- Your Chat Plugin code -->
+    <div class="fb-customerchat"
+         attribution=setup_tool
+         page_id="104526048140046"
+         logged_in_greeting="Chào mừng bạn đến với cửa hàng điện thoai. Bạn cần chúng tôi giúp gì?"
+         logged_out_greeting="Chào mừng bạn đến với cửa hàng điện thoai. Bạn cần chúng tôi giúp gì?">
+    </div>
+</div>
 <script src="{{ url_for('static', filename='js/jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js')}}" type="text/javascript"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/menumaker.js')}}" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" ></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sticky.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/sticky-header.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/owl.carousel.min.js')}}"></script>

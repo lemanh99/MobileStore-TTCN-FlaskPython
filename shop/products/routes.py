@@ -86,7 +86,8 @@ def get_category(name):
     get_cat_prod = Addproduct.query.filter_by(category=get_cat).paginate(page=page, per_page=9)
     products_new = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).limit(2).all()
     products = {'all': get_cat_prod, 'new': products_new, 'average': medium()}
-    return render_template('products/category.html', products=products, get_cat_prod=name, brands=brands(),
+    get_cat_prod = {'name': name, 'id': get_cat.id}
+    return render_template('products/category.html', products=products, get_cat_prod=get_cat_prod, brands=brands(),
                            categories=categories(),
                            get_cat=get_cat)
 

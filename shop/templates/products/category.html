@@ -9,10 +9,15 @@
                     <li><a href="{{url_for('home')}}">Home</a></li>
                     {% if brand %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
+                    {% for category in categories %}
+                    {% if get_brand.category_id == category.id %}
+                    <li><a href="{{url_for('get_category',name=category.name, page=1)}}">{{ category.name }}</a></li>
+                    {% endif %}
+                    {% endfor %}
                     <li><a href="{{url_for('get_brand',name=brand, page=1)}}">{{ brand }}</a></li>
                     {% elif get_cat_prod %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Tất cả</a></li>
-                    <li><a href="{{url_for('get_category',name=get_cat_prod, page=1)}}">{{ get_cat_prod }}</a></li>
+                    <li><a href="{{url_for('get_category',name=get_cat_prod.name, page=1)}}">{{ get_cat_prod.name }}</a></li>
                     {% elif get_search %}
                     <li><a href="{{url_for('get_all_category', page=1)}}">Search for '{{ get_search }}'</a></li>
                     {% else %}
@@ -138,7 +143,7 @@
                         <div class="st-pagination">
                             <ul class="pagination">
                                 {% if products['all'].has_prev %}
-                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.prev_num)}}"
+                                <li><a href="{{url_for('get_category',name=get_cat_prod.name, page=products.prev_num)}}"
                                        aria-label="previous"><span aria-hidden="true">Previous</span></a>
                                 </li>
                                 {% endif %}
@@ -148,18 +153,18 @@
                                 {% if page_num %}
                                 {% if products["all"].page == page_num %}
                                 <li class="active"><a
-                                        href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                        href="{{url_for('get_category',name=get_cat_prod.name, page=page_num)}}">{{page_num}}</a>
                                 </li>
                                 {% else %}
                                 <li>
-                                    <a href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                    <a href="{{url_for('get_category',name=get_cat_prod.name, page=page_num)}}">{{page_num}}</a>
                                 </li>
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
                                 {% if products["all"].has_next %}
-                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.next_num)}}"
+                                <li><a href="{{url_for('get_category',name=get_cat_prod.name, page=products.next_num)}}"
                                        aria-label="Next"><span
                                         aria-hidden="true">Next</span></a></li>
                                 {% endif %}
@@ -173,7 +178,7 @@
                         <div class="st-pagination">
                             <ul class="pagination">
                                 {% if products['all'].has_prev %}
-                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.prev_num)}}"
+                                <li><a href="{{url_for('get_category',name=get_cat_prod.name, page=products.prev_num)}}"
                                        aria-label="previous"><span aria-hidden="true">Previous</span></a>
                                 </li>
                                 {% endif %}
@@ -183,18 +188,18 @@
                                 {% if page_num %}
                                 {% if products["all"].page == page_num %}
                                 <li class="active"><a
-                                        href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                        href="{{url_for('get_category',name=get_cat_prod.name, page=page_num)}}">{{page_num}}</a>
                                 </li>
                                 {% else %}
                                 <li>
-                                    <a href="{{url_for('get_category',name=get_cat_prod, page=page_num)}}">{{page_num}}</a>
+                                    <a href="{{url_for('get_category',name=get_cat_prod.name, page=page_num)}}">{{page_num}}</a>
                                 </li>
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
                                 {% if products["all"].has_next %}
-                                <li><a href="{{url_for('get_category',name=get_cat_prod, page=products.next_num)}}"
+                                <li><a href="{{url_for('get_category',name=get_cat_prod.name, page=products.next_num)}}"
                                        aria-label="Next"><span
                                         aria-hidden="true">Next</span></a></li>
                                 {% endif %}
@@ -258,16 +263,26 @@
                         </ul>
                     </div>
                 </div>
+                {% if get_cat_prod or brand %}
                 <div class="widget wid-brand">
                     <div class="heading"><h4>BRAND</h4></div>
                     <div class="content">
                         <ul>
                             {% for brand in brands %}
+                            {% if get_brand %}
+                            {% if brand.category_id == get_brand.category_id %}
                             <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
+                            {% endif %}
+                            {% else %}
+                            {% if brand.category_id == get_cat_prod.id %}
+                            <li><a href="{{url_for('get_brand', name=brand.name)}}">{{ brand.name }}</a></li>
+                            {% endif %}
+                            {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
                 </div>
+                {% endif %}
                 <div class="widget wid-product">
                     <div class="heading"><h4>Mới nhất</h4></div>
                     <div class="content">
