@@ -33,8 +33,8 @@ def AddCart():
         color = request.form.get('colors')
         product = Addproduct.query.filter_by(id=product_id).first()
         brand = Brand.query.filter_by(id=product.brand_id).first().name
-        print(brand)
         if request.method == "POST":
+            # if product_id in orders
             DictItems = {product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
                                       'color': color, 'quantity': quantity, 'image': product.image_1,
                                       'colors': product.colors, 'brand': brand}}
@@ -86,7 +86,6 @@ def updatecart(code):
                 if int(key) == code:
                     item['quantity'] = quantity
                     item['color'] = color
-                    flash('Item is updated!')
                     return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
@@ -113,7 +112,8 @@ def clearcart():
     try:
         session.pop('Shoppingcart', None)
         if current_user.is_authenticated:
-            orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+            orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(
+                CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
             for order in orders:
                 db.session.delete(order)
                 db.session.commit()

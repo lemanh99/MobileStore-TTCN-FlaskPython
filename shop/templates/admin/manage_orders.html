@@ -15,6 +15,7 @@
                 <th>Sr</th>
                 <th>Name customer</th>
                 <th>Invoice</th>
+                <th>Name products</th>
                 <th>Status</th>
                 <th>Date_create</th>
                 <th>Oders</th>
@@ -22,7 +23,7 @@
                 <th>Delete</th>
                 </thead>
                 <tbody>
-                {%for order in orders%}
+                {%for order in orders.items %}
                 <tr>
                     <td>{{loop.index}}</td>
 
@@ -33,6 +34,9 @@
                     {% endif %}
                     {%endfor%}
                     <td>{{order.invoice}}</td>
+                    {% for key, product in order.orders.items() %}
+                    <td>{{product.name}}</td>
+                    {% endfor %}
                     <td>{{order.status}}</td>
                     <td>{{order.date_created}}</td>
                     <td>
@@ -132,7 +136,7 @@
                                 <h5>Price: {{product.price}}</h5>
                                 <h5>Discount: {{product.discount}}%</h5>
                                 <h5>Quantity: {{product.quantity}}</h5>
-                                <h5>{{"Colors: " + product.colors}}</h5>
+                                <h5>{{"Colors: " + product.color}}</h5>
                                 {% endfor %}
                                 <h5>Day: {{order.date_created}}</h5>
                                 <h5>{{"Delivery address:" + order.address}}</h5>
@@ -145,6 +149,38 @@
                 {%endfor%}
                 </tbody>
             </table>
+            <div class="row">
+                <div class="col text-center">
+                    <ul class="pagination">
+                        {% if orders.has_prev %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('orders_manager', page=orders.prev_num)}}"
+                                                 aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                        </li>
+                        {% endif %}
+                        {% if orders.total> 9 %}
+                        {% for page_num in orders.iter_pages(left_edge=1, right_edge=2,
+                        left_current=1,right_current=2) %}
+                        {% if page_num %}
+                        {% if orders.page == page_num %}
+                        <li class="page-item active"><a class="page-link"
+                                                        href="{{url_for('orders_manager', page=page_num)}}">{{page_num}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('orders_manager', page=page_num)}}">{{page_num}}</a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% if orders.has_next %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('orders_manager', page=orders.next_num)}}"
+                                                 aria-label="Next"><span
+                                aria-hidden="true">Next</span></a></li>
+                        {% endif %}
+                    </ul>
+
+                </div>
+            </div>
         </div>
         <!-- /.card -->
     </section>

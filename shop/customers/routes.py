@@ -4,7 +4,7 @@ from shop import app, db, photos, bcrypt
 from .forms import CustomerRegisterForm, CustomerLoginFrom
 from .models import Register, CustomerOrder
 from shop.products.models import Category, Brand, Addproduct
-from shop.carts.routes import clearcart
+from shop.carts.routes import clearcart, MagerDicts
 from flask import Markup
 import secrets
 import os
@@ -122,8 +122,17 @@ def customer_login():
                     'danger')
                 return redirect(url_for('customer_login'))
             login_user(user)
+            orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(
+                CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+            session.modified = True
+            for order in orders:
+                for product_id, DictItems in order.orders.items():
+                    DictItems = {product_id: DictItems}
+                    if 'Shoppingcart' not in session:
+                        session['Shoppingcart'] = DictItems
+                    if product_id not in session['Shoppingcart']:
+                        session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
             next = request.args.get('next')
-
             return redirect(next or url_for('home'))
         flash('Incorrect email and password', 'danger')
         return redirect(url_for('customer_login'))
@@ -152,6 +161,7 @@ def customer_logout():
     if not current_user.is_authenticated:
         return redirect(url_for('home'))
     logout_user()
+    clearcart()
     return redirect(url_for('home'))
 
 

@@ -17,6 +17,7 @@
                 <th>Product</th>
                 <th>Price</th>
                 <th>Discount</th>
+                <th>Quantity</th>
                 <th>Category</th>
                 <th>Brand</th>
                 <th>Image</th>
@@ -24,12 +25,13 @@
                 <th>Delete</th>
                 </thead>
                 <tbody>
-                {%for product in products%}
+                {%for product in products.items%}
                 <tr>
                     <td>{{loop.index}}</td>
                     <td>{{product.name}}</td>
                     <td>{{product.price}}</td>
                     <td>{{product.discount}} %</td>
+                    <td>{{product.stock}}</td>
                     <td>{{product.category_id}}</td>
                     <td>{{product.brand.name}}</td>
                     <td><img src="{{url_for('static',filename='images/'+product.image_1)}}" width="50" height="40"></td>
@@ -70,6 +72,38 @@
                 {%endfor%}
                 </tbody>
             </table>
+            <div class="row">
+                <div class="col text-center">
+                    <ul class="pagination">
+                        {% if products.has_prev %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('product', page=products.prev_num)}}"
+                                                 aria-label="previous"><span aria-hidden="true">Previous</span></a>
+                        </li>
+                        {% endif %}
+                        {% if products.total> 9 %}
+                        {% for page_num in products.iter_pages(left_edge=1, right_edge=2,
+                        left_current=1,right_current=2) %}
+                        {% if page_num %}
+                        {% if products.page == page_num %}
+                        <li class="page-item active"><a class="page-link"
+                                                        href="{{url_for('product', page=page_num)}}">{{page_num}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('product', page=page_num)}}">{{page_num}}</a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% if products.has_next %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('product', page=products.next_num)}}"
+                                                 aria-label="Next"><span
+                                aria-hidden="true">Next</span></a></li>
+                        {% endif %}
+                    </ul>
+
+                </div>
+            </div>
         </div>
         <!-- /.card -->
     </section>
