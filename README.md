@@ -1,3 +1,4 @@
+
 # Chào mừng đến với github của tôi!
 Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự đóng góp của các thành viên: [Boss1](https://www.facebook.com/ndminh1004/), [Boss2](https://www.facebook.com/hoanglongnhat0605/), [Boss3](https://www.facebook.com/proxike/), [Boss4](https://www.facebook.com/profile.php?id=100001136116158).
 - Tên đề tài : **Website bán hàng điện thoại.**
@@ -6,7 +7,7 @@ Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự �
 
 - Ngày bắt dầu code: 14/10/2020
 - Công bố version 1.0. : 09/11/2020 (Hoàn thành tương đối các chức năng theo sơ đồ use_case)
-				  1.0.1: 10/11/2020 (Chỉnh sửa 1 số lỗi, Thêm chức năng chat bot messenger facebook)
+	- 1.0.1: 10/11/2020 (Chỉnh sửa 1 số lỗi, Thêm chức năng chat bot messenger facebook, lưu lịch sử giỏ hàng)
 
 ## Mục lục:
 1.[Hướng dẫn cài đặt](#p1)

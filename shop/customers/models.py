@@ -8,7 +8,6 @@ import json
 def user_loader(user_id):
     return Register.query.get(user_id)
 
-
 class Register(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)

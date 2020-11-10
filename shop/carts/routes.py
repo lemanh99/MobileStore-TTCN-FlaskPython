@@ -1,3 +1,5 @@
+import secrets
+
 from flask import render_template, session, request, redirect, url_for, flash, current_app
 from flask_login import current_user
 
@@ -45,15 +47,41 @@ def AddCart():
                         if int(key) == int(product_id):
                             session.modified = True
                             item['quantity'] += 1
+                            if current_user.is_authenticated:
+                                orders = CustomerOrder.query.filter(
+                                    CustomerOrder.customer_id == current_user.id).filter(
+                                    CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+                                for order in orders:
+                                    if product_id in order.orders:
+                                        customer_order = CustomerOrder.query.get_or_404(order.id)
+                                        customer_order.orders = {product_id: session['Shoppingcart'][product_id]}
+                                        db.session.commit()
                 else:
                     session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
+                    if current_user.is_authenticated:
+                        customer_id = current_user.id
+                        invoice = secrets.token_hex(5)
+                        order = CustomerOrder(invoice=invoice, customer_id=customer_id,
+                                              orders={product_id: session['Shoppingcart'][product_id]},
+                                              status=None)
+                        db.session.add(order)
+                        db.session.commit()
                     return redirect(request.referrer)
             else:
                 session['Shoppingcart'] = DictItems
+                if current_user.is_authenticated:
+                    customer_id = current_user.id
+                    invoice = secrets.token_hex(5)
+                    order = CustomerOrder(invoice=invoice, customer_id=customer_id,
+                                          orders={product_id: session['Shoppingcart'][product_id]},
+                                          status=None)
+                    db.session.add(order)
+                    db.session.commit()
+
                 return redirect(request.referrer)
 
     except Exception as e:
-        print(e)
+        print("Loi", e)
     finally:
         return redirect(request.referrer)
 

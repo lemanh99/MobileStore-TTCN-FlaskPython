@@ -122,6 +122,22 @@ def customer_login():
                     'danger')
                 return redirect(url_for('customer_login'))
             login_user(user)
+
+            # Xu ly gio hang
+            if 'Shoppingcart' in session:
+                orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(
+                    CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+                product_id = [order.orders for order in orders]
+                for key, item in session['Shoppingcart'].items():
+                    if key not in product_id:
+                        customer_id = current_user.id
+                        invoice = secrets.token_hex(5)
+                        order = CustomerOrder(invoice=invoice, customer_id=customer_id,
+                                              orders={key: session['Shoppingcart'][key]},
+                                              status=None)
+                        db.session.add(order)
+                        db.session.commit()
+            session.pop('Shoppingcart', None)
             orders = CustomerOrder.query.filter(CustomerOrder.customer_id == current_user.id).filter(
                 CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
             session.modified = True
@@ -130,8 +146,9 @@ def customer_login():
                     DictItems = {product_id: DictItems}
                     if 'Shoppingcart' not in session:
                         session['Shoppingcart'] = DictItems
-                    if product_id not in session['Shoppingcart']:
+                    else:
                         session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
+
             next = request.args.get('next')
             return redirect(next or url_for('home'))
         flash('Incorrect email and password', 'danger')
@@ -165,32 +182,18 @@ def customer_logout():
     return redirect(url_for('home'))
 
 
-@app.route('/getorder')
+@app.route('/getorder/')
 @login_required
 def get_order():
-    customer_id = current_user.id
-    invoices = []
-    for key in session['Shoppingcart'].keys():
-        invoice = secrets.token_hex(5)
-        invoices.append(invoice)
-        order = CustomerOrder(invoice=invoice, customer_id=customer_id, orders={key: session['Shoppingcart'][key]},
-                              status=None)
-        db.session.add(order)
-        db.session.commit()
-    invoices = ",".join(invoices)
-    return redirect(url_for('orders', invoices=invoices))
-
-
-@app.route('/orders/<invoices>')
-@login_required
-def orders(invoices):
     if not current_user.is_authenticated:
         return redirect(url_for('customer_login'))
     customer_id = current_user.id
     customer = Register.query.filter_by(id=customer_id).first()
-
+    orders = CustomerOrder.query.filter(
+        CustomerOrder.customer_id == current_user.id).filter(
+        CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+    invoices = [order.invoice for order in orders]
     orders = []
-    invoices = [invoice for invoice in invoices.split(',')]
     for invoice in invoices:
         order = CustomerOrder.query.filter_by(customer_id=customer_id, invoice=invoice).order_by(
             CustomerOrder.id.desc()).first()
@@ -201,7 +204,6 @@ def orders(invoices):
         discounttotal += float(product['discount'] / 100) * float(product['price']) * int(product['quantity'])
         subtotals += float(product['price']) * int(product['quantity'])
     subtotals -= discounttotal
-    print(subtotals)
     return render_template('customers/order.html', invoices=invoices, subtotals=subtotals, customer=customer,
                            orders=orders, brands=brands(), categories=categories())
 
