@@ -21,6 +21,7 @@ MarkupSafe==1.1.1
 mpmath==1.1.0
 mysqlclient==2.0.1
 phonenumbers==8.12.11
+psycopg2==2.8.6
 pycodestyle==2.6.0
 pycparser==2.20
 python-dateutil==2.8.1
