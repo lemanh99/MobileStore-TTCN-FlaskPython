@@ -238,7 +238,7 @@ def register():
     #     return redirect(url_for('register'))
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
-        hash_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
+        hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = Admin(name=form.name.data, username=form.username.data, email=form.email.data, password=hash_password)
         db.session.add(user)
         db.session.commit()
@@ -254,7 +254,8 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = Admin.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        password = form.password.data.encode('utf-8')
+        if user and bcrypt.check_password_hash(user.password, password):
             session['email'] = form.email.data
             flash(f'welcome {form.email.data} you are logedin now', 'success')
             return redirect(url_for('admin'))
