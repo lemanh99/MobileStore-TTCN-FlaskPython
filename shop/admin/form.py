@@ -4,7 +4,7 @@ from shop.customers.models import Register
 import phonenumbers
 
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     name = StringField('Name', [validators.Length(min=4, max=25)])
     username = StringField('Username', [validators.Length(min=4, max=25)])
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
