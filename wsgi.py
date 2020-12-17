@@ -1,14 +1,9 @@
-def application(env, start_response):
-    import sys
-    import socket
-    from datetime import date
-    from string import Template
+import os
+from shop import app as _application
 
-    with open ("ROOT/run.py", "r") as index_file:
-         data=index_file.read().replace('\n', '')
-         index_object = Template(data)
-         index_formated=index_object.substitute(mydate=date.today().year, hostname=socket.gethostname())
-         if sys.version.split(' ')[0].split('.')[0] == '3':
-            index_formated = index_formated.encode('utf-8')
-    start_response('200 OK', [('Content-Type','text/html')])
-    return [ index_formated  ]
+def application(environ, start_response):
+    os.environ['ENVTYPE'] = environ['ENVTYPE']
+    return _application(environ, start_response)
+
+if __name__ == '__main__':
+    _application.run(debug=True, threaded=True)
