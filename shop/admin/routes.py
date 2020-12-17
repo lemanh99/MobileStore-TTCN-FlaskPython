@@ -244,8 +244,9 @@ def register():
         db.session.commit()
         flash(f' Wellcom {form.name.data} Thanks for registering', 'success')
         return redirect(url_for('register'))
-    user = Admin.query.filter_by(email=session['email']).all()
-    return render_template('admin/admin_register.html', form=form, title='Registration page', user=user[0])
+    # user = Admin.query.filter_by(email=session['email']).all()
+    user = None;
+    return render_template('admin/admin_register.html', form=form, title='Registration page', user=user)
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
