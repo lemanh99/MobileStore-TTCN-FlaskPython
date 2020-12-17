@@ -235,7 +235,7 @@ def changes_password():
 def register():
     if 'email' not in session:
         flash(f'please login first', 'danger')
-        return redirect(url_for('login'))
+        return redirect(url_for('register'))
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         hash_password = bcrypt.generate_password_hash(form.password.data)
