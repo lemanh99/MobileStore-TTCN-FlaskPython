@@ -233,9 +233,9 @@ def changes_password():
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register():
-    # if 'email' not in session:
-    #     flash(f'please login first', 'danger')
-    #     return redirect(url_for('register'))
+    if 'email' not in session:
+        flash(f'please login first', 'danger')
+        return redirect(url_for('register'))
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         hash_password = bcrypt.generate_password_hash(form.password.data)
@@ -244,9 +244,8 @@ def register():
         db.session.commit()
         flash(f' Wellcom {form.name.data} Thanks for registering', 'success')
         return redirect(url_for('register'))
-    # user = Admin.query.filter_by(email=session['email']).all()
-    user = None;
-    return render_template('admin/admin_register.html', form=form, title='Registration page', user=user)
+    user = Admin.query.filter_by(email=session['email']).all()
+    return render_template('admin/admin_register.html', form=form, title='Registration page', user=user[0])
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
