@@ -10,7 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/db_name'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/myshop4'
-DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user='lmzmukpyharrik',pw='a334089832744e3280289b61f1c3dc821407562c6ff6bc6d87638453b43f04cf',url='ec2-35-175-155-248.compute-1.amazonaws.com',db='myshop4')
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user='lmzmukpyharrik',pw='a334089832744e3280289b61f1c3dc821407562c6ff6bc6d87638453b43f04cf',url='ec2-35-175-155-248.compute-1.amazonaws.com',db='postgresql-transparent-98545')
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SECRET_KEY'] = 'hfouewhfoiwefoquw'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
