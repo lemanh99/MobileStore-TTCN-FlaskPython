@@ -9,8 +9,7 @@ from flask_migrate import Migrate
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/db_name'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/myshop4'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:YKVlfd89801@node238154-laptrinh.j.layershift.co.uk/myshop4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/myshop4'
 app.config['SECRET_KEY'] = 'hfouewhfoiwefoquw'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
