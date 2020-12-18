@@ -26,7 +26,7 @@ def admin_register_custormer():
             flash(f'Phone Number Used!', 'danger')
             return redirect(url_for('admin_register_custormer'))
         try:
-            hash_password = bcrypt.generate_password_hash(form.password.data)
+            hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf8')
             register = Register(username=form.username.data, email=form.email.data, first_name=form.first_name.data,
                                 last_name=form.last_name.data, phone_number=form.phone_number.data,
                                 gender=form.gender.data,
@@ -218,13 +218,13 @@ def changes_password():
         return redirect(url_for('login'))
     user = Admin.query.filter_by(email=session['email'])
     detail_password_admin = Admin.query.get_or_404(user[0].id)
-    old_password = request.form.get('oldpassword')
-    new_password = request.form.get('newpassword')
+    old_password = request.form.get('oldpassword').encode('utf8')
+    new_password = request.form.get('newpassword').encode('utf8')
     if request.method == "POST":
         if not bcrypt.check_password_hash(detail_password_admin.password, old_password):
             flash(f'Old passwords do not match!', 'danger')
             return redirect(url_for('changes_password'))
-        detail_password_admin.password = bcrypt.generate_password_hash(new_password)
+        detail_password_admin.password = bcrypt.generate_password_hash(new_password).decode('utf8')
         flash(f'Change Password Complete!', 'success')
         db.session.commit()
         return redirect(url_for('changes_password'))
@@ -238,7 +238,7 @@ def register():
         return redirect(url_for('login'))
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
-        hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf8')
         user = Admin(name=form.name.data, username=form.username.data, email=form.email.data, password=hash_password)
         db.session.add(user)
         db.session.commit()
@@ -253,7 +253,7 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = Admin.query.filter_by(email=form.email.data).first()
-        password = form.password.data.encode('utf-8')
+        password = form.password.data.encode('utf8')
         if user and bcrypt.check_password_hash(user.password, password):
             session['email'] = form.email.data
             flash(f'welcome {form.email.data} you are logedin now', 'success')

@@ -59,14 +59,14 @@ def update_account():
 @login_required
 def change_password():
     detail_password_customer = Register.query.get_or_404(current_user.id)
-    old_password = request.form.get('oldpassword')
-    new_password = request.form.get('newpassword')
+    old_password = request.form.get('oldpassword').encode('utf8')
+    new_password = request.form.get('newpassword').encode('utf8')
     if request.method == "POST":
         if not bcrypt.check_password_hash(detail_password_customer.password, old_password):
             flash(f'Old passwords do not match!', 'danger')
             return redirect(url_for('change_password'))
 
-        detail_password_customer.password = bcrypt.generate_password_hash(new_password)
+        detail_password_customer.password = bcrypt.generate_password_hash(new_password).decode('utf8')
         flash(f'Change Password Complete!', 'success')
         db.session.commit()
         return redirect(url_for('change_password'))
@@ -91,7 +91,7 @@ def customer_register():
             flash(f'Phone Number Used!', 'danger')
             return redirect(url_for('customer_register'))
         try:
-            hash_password = bcrypt.generate_password_hash(form.password.data)
+            hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf8')
             register = Register(username=form.username.data, email=form.email.data, first_name=form.first_name.data,
                                 last_name=form.last_name.data, phone_number=form.phone_number.data,
                                 gender=form.gender.data,
@@ -115,7 +115,7 @@ def customer_login():
     if form.validate_on_submit():
         # Register.query.filter_by(lock=False).first()
         user = Register.query.filter_by(username=form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user and bcrypt.check_password_hash(user.password, form.password.data.encode('utf8')):
             if user.lock == True:
                 flash(Markup(
                     "Account has been locked ! <a href='mailto: lemanh@gmail.com' class='alert-link' >Help here</a>"),
@@ -164,7 +164,7 @@ def customer_login_page(page, id):
     form = CustomerLoginFrom()
     if form.validate_on_submit():
         user = Register.query.filter_by(username=form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user and bcrypt.check_password_hash(user.password, form.password.data.encode('utf8')):
             login_user(user)
             return redirect(url_for('detail', id=id))
         flash('Incorrect email and password', 'danger')
