@@ -1125,4 +1125,6 @@ footer .copyright ul li {display: inline-block;margin-left: 10px;}
 
 /* ---------------------------------------------------------------------------- */
 .detail-btn .product-btn .btn-like i{margin-left: 3px;margin-top: 1px;}
+.ico-scrolltop {background-position: -520px 0;width: 60px;height: 60px;}
+.icons {display: inline-block;background: url(../images/Assets.png) 0 0 no-repeat;vertical-align: middle;text-align: center;}
 
