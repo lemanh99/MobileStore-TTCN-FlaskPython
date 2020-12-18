@@ -31,7 +31,8 @@
 <body>
 {%block content%}
 {% endblock content%}
-<div class="scrollToTop" style="display: block;position: fixed;z-index: 999999;bottom: 60px;right: 10px;cursor: pointer; margin-bottom: 61px;">
+<div class="scrollToTop"
+     style="display: none;position: fixed;z-index: 999999;bottom: 60px;right: 10px;cursor: pointer; margin-bottom: 24px;margin-right: 21px;">
     <i class="icons ico-scrolltop" title="ScrollToTop"></i>
 </div>
 <div>
@@ -51,6 +52,7 @@
         js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
+
     </script>
     <!-- Your Chat Plugin code -->
     <div class="fb-customerchat"
@@ -89,6 +91,7 @@
             return false;
         });
     });
+
 </script>
 </body>
 
