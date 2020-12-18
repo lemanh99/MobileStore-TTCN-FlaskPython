@@ -31,10 +31,9 @@
 <body>
 {%block content%}
 {% endblock content%}
-<div class="scrollToTop" style="display: block;position: fixed;z-index: 999999;bottom: 60px;right: 10px;cursor: pointer;">
+<div class="scrollToTop" style="display: block;position: fixed;z-index: 999999;bottom: 60px;right: 10px;cursor: pointer; margin-bottom: 61px;">
     <i class="icons ico-scrolltop" title="ScrollToTop"></i>
 </div>
-
 <div>
     <div id="fb-root"></div>
     <script>
@@ -77,6 +76,7 @@
 <script type='text/javascript'>
     $(function () {
         $(window).on('scroll', function () {
+            alert('Hello');
             if ($(window).scrollTop() > 100) {
                 $('.scrollToTop').fadeIn();
             } else {
@@ -85,6 +85,7 @@
         });
 
         $('.scrollToTop').on('click', function () {
+
             $('html, body').animate({ scrollTop: 0 }, 500, 'linear');
             return false;
         });

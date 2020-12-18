@@ -59,10 +59,10 @@ def update_account():
 @login_required
 def change_password():
     detail_password_customer = Register.query.get_or_404(current_user.id)
-    old_password = request.form.get('oldpassword').encode('utf8')
-    new_password = request.form.get('newpassword').encode('utf8')
+    old_password = request.form.get('oldpassword')
+    new_password = request.form.get('newpassword')
     if request.method == "POST":
-        if not bcrypt.check_password_hash(detail_password_customer.password, old_password):
+        if not bcrypt.check_password_hash(detail_password_customer.password, old_password.encode('utf8')):
             flash(f'Old passwords do not match!', 'danger')
             return redirect(url_for('change_password'))
 
