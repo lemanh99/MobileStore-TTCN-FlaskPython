@@ -1,13 +1,43 @@
+import os
+import urllib
 from itertools import product
 
-from flask import render_template, session, redirect, request, url_for, flash, session
+from flask import render_template, session, redirect, request, url_for, flash, session, current_app
 
-from shop import app, db, bcrypt
+from shop import app, db, bcrypt, storage
 from .form import RegistrationForm, LoginForm, CustomerRegisterForm
 from .models import Admin
 from shop.customers.models import Register, CustomerOrder
 from shop.products.models import Addproduct, Brand, Category
 
+@app.route('/synchronization')
+def data_syn():
+    if 'email' not in session:
+        flash(f'please login first', 'danger')
+        return redirect(url_for('login'))
+    try:
+        urllib.request.urlopen("https://console.firebase.google.com/")  # Python 3.x
+        ls = ['background.png', 'Assets.png', 'bg.jpg', 'AdminLTELogo.png']
+        for i in ls:
+            if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + i)):
+                storage.child("images/" + i).download(
+                    os.path.join(current_app.root_path, "static/images/" + i))
+        products = Addproduct.query.all();
+        for product in products:
+            if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + product.image_1)):
+                storage.child("images/" + product.image_1).download(
+                    os.path.join(current_app.root_path, "static/images/" + product.image_1))
+            if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + product.image_2)):
+                storage.child("images/" + product.image_2).download(
+                    os.path.join(current_app.root_path, "static/images/" + product.image_2))
+            if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + product.image_3)):
+                storage.child("images/" + product.image_3).download(
+                    os.path.join(current_app.root_path, "static/images/" + product.image_3))
+        flash(f'Synchronization Data Success', 'success')
+        return redirect(url_for('admin_manager'))
+    except:
+        flash(f'Synchronization Data Failure, Please Reconnect Internet', 'danger')
+        return redirect(url_for('admin_manager'))
 
 @app.route('/admin/customer_register', methods=['GET', 'POST'])
 def admin_register_custormer():
@@ -218,10 +248,10 @@ def changes_password():
         return redirect(url_for('login'))
     user = Admin.query.filter_by(email=session['email'])
     detail_password_admin = Admin.query.get_or_404(user[0].id)
-    old_password = request.form.get('oldpassword').encode('utf8')
-    new_password = request.form.get('newpassword').encode('utf8')
+    old_password = request.form.get('oldpassword')
+    new_password = request.form.get('newpassword')
     if request.method == "POST":
-        if not bcrypt.check_password_hash(detail_password_admin.password, old_password):
+        if not bcrypt.check_password_hash(detail_password_admin.password, old_password.encode('utf8')):
             flash(f'Old passwords do not match!', 'danger')
             return redirect(url_for('changes_password'))
         detail_password_admin.password = bcrypt.generate_password_hash(new_password).decode('utf8')

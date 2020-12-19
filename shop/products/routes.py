@@ -1,8 +1,10 @@
+import urllib
+
 from flask import render_template, session, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user, logout_user, login_user
 from sympy import im
 
-from shop import app, db, photos
+from shop import app, db, photos, storage
 from .models import Category, Brand, Addproduct, Rate, Register
 from .forms import Addproducts, Rates
 from shop.admin.models import Admin
@@ -45,12 +47,16 @@ def medium():
 @app.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    category = Category.query.filter_by(name = "Smartphone").first()
-    products_all = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(Addproduct.id.desc()).paginate(page=page,
-                                                                                                         per_page=4)
-    products_hot = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(Addproduct.price.desc()).limit(3).all()
-    products_new = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(Addproduct.id.desc()).all()
-    products_sell = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(Addproduct.discount.desc()).limit(10).all()
+    category = Category.query.filter_by(name="Smartphone").first()
+    products_all = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(
+        Addproduct.id.desc()).paginate(page=page,
+                                       per_page=4)
+    products_hot = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(
+        Addproduct.price.desc()).limit(3).all()
+    products_new = Addproduct.query.filter(Addproduct.stock > 0).filter(Addproduct.category_id == category.id).order_by(
+        Addproduct.id.desc()).all()
+    products_sell = Addproduct.query.filter(Addproduct.stock > 0).filter(
+        Addproduct.category_id == category.id).order_by(Addproduct.discount.desc()).limit(10).all()
     products = {'all': products_all, 'hot': products_hot, 'new': products_new, 'sell': products_sell,
                 'average': medium()}
     return render_template('customers/index.html', products=products, brands=brands(), categories=categories())
@@ -127,7 +133,7 @@ def updatebrand(id):
         return redirect(url_for('brands'))
     user = Admin.query.filter_by(email=session['email']).all()
     return render_template('products/updatebrand.html', title='Uppdate brand', brands='brands', updatebrand=updatebrand,
-                           categories = categories(),user=user[0])
+                           categories=categories(), user=user[0])
 
 
 @app.route('/deletebrand/<int:id>', methods=['GET', 'POST'])
@@ -211,6 +217,7 @@ def addproduct():
     if 'email' not in session:
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
+
     form = Addproducts(request.form)
     brands = Brand.query.all()
     categories = Category.query.all()
@@ -223,9 +230,29 @@ def addproduct():
         desc = form.description.data
         brand = request.form.get('brand')
         category = request.form.get('category')
-        image_1 = photos.save(request.files.get('image_1'), name=secrets.token_hex(10) + ".")
-        image_2 = photos.save(request.files.get('image_2'), name=secrets.token_hex(10) + ".")
-        image_3 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10) + ".")
+
+        image_1 = request.files.get('image_1')
+        image_2 = request.files.get('image_2')
+        image_3 = request.files.get('image_3')
+
+        name_random_1 = secrets.token_hex(10) + "."
+        name_random_2 = secrets.token_hex(10) + "."
+        name_random_3 = secrets.token_hex(10) + "."
+
+        # Save in firebase database
+        save_link_1 = "" + name_random_1 + image_1.filename.split('.')[-1]
+        save_link_2 = "" + name_random_2 + image_2.filename.split('.')[-1]
+        save_link_3 = "" + name_random_3 + image_3.filename.split('.')[-1]
+
+        # save static/images
+        image_1 = photos.save(image_1, name=name_random_1)
+        image_2 = photos.save(image_2, name=name_random_2)
+        image_3 = photos.save(image_3, name=name_random_3)
+
+        storage.child("images/" + save_link_1).put(os.path.join(current_app.root_path, "static/images/" + save_link_1))
+        storage.child("images/" + save_link_2).put(os.path.join(current_app.root_path, "static/images/" + save_link_2))
+        storage.child("images/" + save_link_3).put(os.path.join(current_app.root_path, "static/images/" + save_link_3))
+
         product = Addproduct(name=name, price=price, discount=discount, stock=stock, colors=colors, desc=desc,
                              category_id=category, brand_id=brand, image_1=image_1, image_2=image_2, image_3=image_3)
         db.session.add(product)
@@ -242,6 +269,8 @@ def updateproduct(id):
     if 'email' not in session:
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
+
+    # bucket.child('images').delete("30d516e59ed7deb97ed8.png")
     form = Addproducts(request.form)
     product = Addproduct.query.get_or_404(id)
     brands = Brand.query.all()
@@ -259,24 +288,47 @@ def updateproduct(id):
         product.category_id = category
         product.brand_id = brand
         if request.files.get('image_1'):
+            image_1 = request.files.get('image_1')
+            name_random_1 = secrets.token_hex(10) + "."
+            save_link_1 = "" + name_random_1 + image_1.filename.split('.')[-1]
             try:
                 os.unlink(os.path.join(current_app.root_path, "static/images/" + product.image_1))
-                product.image_1 = photos.save(request.files.get('image_1'), name=secrets.token_hex(10) + ".")
+                storage.delete("images/" + product.image_1)
+                product.image_1 = photos.save(image_1, name=name_random_1)
+                storage.child("images/" + save_link_1).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_1))
             except:
-                product.image_1 = photos.save(request.files.get('image_1'), name=secrets.token_hex(10) + ".")
+                product.image_1 = photos.save(image_1, name=name_random_1)
+                storage.child("images/" + save_link_1).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_1))
         if request.files.get('image_2'):
+            image_2 = request.files.get('image_2')
+            name_random_2 = secrets.token_hex(10) + "."
+            save_link_2 = "" + name_random_2 + image_2.filename.split('.')[-1]
             try:
                 os.unlink(os.path.join(current_app.root_path, "static/images/" + product.image_2))
-                product.image_2 = photos.save(request.files.get('image_2'), name=secrets.token_hex(10) + ".")
+                storage.delete("images/" + product.image_2)
+                product.image_2 = photos.save(image_2, name=name_random_2)
+                storage.child("images/" + save_link_2).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_2))
             except:
-                product.image_2 = photos.save(request.files.get('image_2'), name=secrets.token_hex(10) + ".")
+                product.image_2 = photos.save(image_2, name=name_random_2)
+                storage.child("images/" + save_link_2).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_2))
         if request.files.get('image_3'):
+            image_3 = request.files.get('image_3')
+            name_random_3 = secrets.token_hex(10) + "."
+            save_link_3 = "" + name_random_3 + image_3.filename.split('.')[-1]
             try:
                 os.unlink(os.path.join(current_app.root_path, "static/images/" + product.image_3))
-                product.image_3 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10) + ".")
+                storage.delete("images/" + product.image_3)
+                product.image_3 = photos.save(image_3, name=name_random_3)
+                storage.child("images/" + save_link_3).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_3))
             except:
-                product.image_3 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10) + ".")
-
+                product.image_3 = photos.save(image_3, name=name_random_3)
+                storage.child("images/" + save_link_3).put(
+                    os.path.join(current_app.root_path, "static/images/" + save_link_3))
         db.session.commit()
         flash(f'The product was updated', 'success')
         return redirect(url_for('product'))

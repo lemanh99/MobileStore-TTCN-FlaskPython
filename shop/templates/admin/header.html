@@ -185,7 +185,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ url_for('orders_manager')}}" class="nav-link {% if request.endpoint == 'orders' %} active {% endif %}">
+                        <a href="{{ url_for('orders_manager')}}"
+                           class="nav-link {% if request.endpoint == 'orders' %} active {% endif %}">
                             <i class="nav-icon fas fa-edit"></i>
                             <p>
                                 Orders
@@ -206,6 +207,14 @@
                             <i class="nav-icon fas fa-edit"></i>
                             <p>
                                 Change Password
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('data_syn') }}" class="nav-link">
+                            <i class="nav-icon fas fa-edit"></i>
+                            <p>
+                                Synchronization
                             </p>
                         </a>
                     </li>
