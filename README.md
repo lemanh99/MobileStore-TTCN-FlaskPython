@@ -1,6 +1,9 @@
 
 # Lập trình web bán hàng điện thoại sử dụng Flask!
-Link website: [https://thuctapcongnhan2020.herokuapp.com/](https://thuctapcongnhan2020.herokuapp.com/)
+Link website: 
+- Giao diện người dùng: [https://thuctapcongnhan2020.herokuapp.com/](https://thuctapcongnhan2020.herokuapp.com/)
+- Giao diện admin: [https://thuctapcongnhan2020.herokuapp.com/admin](https://thuctapcongnhan2020.herokuapp.com/admin)
+
 Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự đóng góp của các thành viên: [Boss1](https://www.facebook.com/ndminh1004/), [Boss2](https://www.facebook.com/hoanglongnhat0605/), [Boss3](https://www.facebook.com/proxike/), [Boss4](https://www.facebook.com/profile.php?id=100001136116158).
 - Tên đề tài : **Website bán hàng điện thoại.**
 - Ngôn ngữ backend: [Flask-Python](https://flask.palletsprojects.com/en/1.1.x/)
