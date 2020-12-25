@@ -3,18 +3,14 @@ import urllib
 from itertools import product
 
 from flask import render_template, session, redirect, request, url_for, flash, session, current_app
-
 from shop import app, db, bcrypt, storage
 from .form import RegistrationForm, LoginForm, CustomerRegisterForm
 from .models import Admin
 from shop.customers.models import Register, CustomerOrder
-from shop.products.models import Addproduct, Brand, Category
+from shop.products.models import Addproduct, Brand, Category, Rate
 
-@app.route('/synchronization')
-def data_syn():
-    if 'email' not in session:
-        flash(f'please login first', 'danger')
-        return redirect(url_for('login'))
+
+def synchronization():
     try:
         urllib.request.urlopen("https://console.firebase.google.com/")  # Python 3.x
         ls = ['background.png', 'Assets.png', 'bg.jpg', 'AdminLTELogo.png']
@@ -33,11 +29,22 @@ def data_syn():
             if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + product.image_3)):
                 storage.child("images/" + product.image_3).download(
                     os.path.join(current_app.root_path, "static/images/" + product.image_3))
+    except:
+        return True
+
+
+@app.route('/synchronization')
+def data_syn():
+    if 'email' not in session:
+        flash(f'please login first', 'danger')
+        return redirect(url_for('login'))
+    if synchronization():
         flash(f'Synchronization Data Success', 'success')
         return redirect(url_for('admin_manager'))
-    except:
+    else:
         flash(f'Synchronization Data Failure, Please Reconnect Internet', 'danger')
         return redirect(url_for('admin_manager'))
+
 
 @app.route('/admin/customer_register', methods=['GET', 'POST'])
 def admin_register_custormer():
@@ -183,6 +190,10 @@ def delete_customer(id):
         return redirect(url_for('login'))
     customer = Register.query.get_or_404(id)
     if request.method == "POST":
+        rates = Rate.query.filter(Rate.register_id == id).all()
+        for rate in rates:
+            db.session.delete(rate)
+            db.session.commit()
         db.session.delete(customer)
         db.session.commit()
         flash(f"The customer {customer.username} was deleted from your database", "success")

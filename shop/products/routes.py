@@ -145,6 +145,10 @@ def deletebrand(id):
     if request.method == "POST":
         products = Addproduct.query.filter(Addproduct.category_id == id).all()
         for product in products:
+            rates = Rate.query.filter(Rate.product_id == product.id).all()
+            for rate in rates:
+                db.session.delete(rate)
+                db.session.commit()
             db.session.delete(product)
             db.session.commit()
         db.session.delete(brand)
@@ -183,7 +187,6 @@ def updatecat(id):
         flash(f'The category {updatecat.name} was updated', 'success')
         db.session.commit()
         return redirect(url_for('categories'))
-    category = updatecat.name
     user = Admin.query.filter_by(email=session['email']).all()
     return render_template('products/updatebrand.html', title='Update cat', updatecat=updatecat, user=user[0])
 
@@ -197,6 +200,10 @@ def deletecat(id):
     if request.method == "POST":
         products = Addproduct.query.filter(Addproduct.category_id == id).all()
         for product in products:
+            rates = Rate.query.filter(Rate.product_id == product.id).all()
+            for rate in rates:
+                db.session.delete(rate)
+                db.session.commit()
             db.session.delete(product)
             db.session.commit()
         brands = Brand.query.filter(Brand.category_id == id).all()
@@ -359,6 +366,10 @@ def deleteproduct(id):
             os.unlink(os.path.join(current_app.root_path, "static/images/" + product.image_3))
         except Exception as e:
             print(e)
+        rates = Rate.query.filter(Rate.product_id == id).all()
+        for rate in rates:
+            db.session.delete(rate)
+            db.session.commit()
         db.session.delete(product)
         db.session.commit()
         flash(f'The product {product.name} was delete from your record', 'success')
