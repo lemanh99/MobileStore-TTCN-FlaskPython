@@ -16,12 +16,14 @@ from shop.admin.models import Admin
 
 
 def brands():
-    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    # brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    brands = Brand.query.all()
     return brands
 
 
 def categories():
-    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    # categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    categories = Category.query.order_by(Category.name.desc()).all()
     return categories
 
 

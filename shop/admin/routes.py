@@ -29,8 +29,9 @@ def synchronization():
             if not os.path.isfile(os.path.join(current_app.root_path, "static/images/" + product.image_3)):
                 storage.child("images/" + product.image_3).download(
                     os.path.join(current_app.root_path, "static/images/" + product.image_3))
-    except:
         return True
+    except:
+        return False
 
 
 @app.route('/synchronization')

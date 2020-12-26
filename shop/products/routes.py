@@ -2,8 +2,6 @@ import urllib
 
 from flask import render_template, session, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user, logout_user, login_user
-from sympy import im
-
 from shop import app, db, photos, storage
 from .models import Category, Brand, Addproduct, Rate, Register
 from .forms import Addproducts, Rates
@@ -438,9 +436,9 @@ def get_discount(start, end):
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     value = request.form['search']
-    search = "%{}%".format(value)
+    search = "%{}%".format(value.lower())
     page = request.args.get('page', 1, type=int)
-    product = Addproduct.query.filter(Addproduct.name.like(search)).paginate(page=page, per_page=9)
+    product = Addproduct.query.filter(Addproduct.name.ilike(search)).paginate(page=page, per_page=9)
     products = {'all': product, 'average': medium()}
     return render_template('products/category.html', get_search=value, products=products, brands=brands(),
                            categories=categories())
