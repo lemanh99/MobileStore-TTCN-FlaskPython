@@ -125,6 +125,16 @@ def deleteitem(id):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('getCart'))
     try:
+        orders = CustomerOrder.query.filter(
+            CustomerOrder.customer_id == current_user.id).filter(
+            CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+        for order in orders:
+            for key, item in order.orders.items():
+                if int(key) == id:
+                    customer = CustomerOrder.query.get_or_404(order.id)
+                    db.session.delete(customer)
+                    db.session.commit()
+                    break;
         session.modified = True
         for key, item in session['Shoppingcart'].items():
             if int(key) == id:
