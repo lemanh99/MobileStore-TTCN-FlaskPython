@@ -46,7 +46,7 @@ def AddCart():
                     for key, item in session['Shoppingcart'].items():
                         if int(key) == int(product_id):
                             session.modified = True
-                            item['quantity'] += 1
+                            item['quantity'] += quantity;
                             if current_user.is_authenticated:
                                 orders = CustomerOrder.query.filter(
                                     CustomerOrder.customer_id == current_user.id).filter(
