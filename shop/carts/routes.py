@@ -127,14 +127,14 @@ def deleteitem(id):
     try:
         orders = CustomerOrder.query.filter(
             CustomerOrder.customer_id == current_user.id).filter(
-            CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+            CustomerOrder.status == None).all()
         for order in orders:
             for key, item in order.orders.items():
                 if int(key) == id:
                     customer = CustomerOrder.query.get_or_404(order.id)
                     db.session.delete(customer)
                     db.session.commit()
-                    break;
+                    break
         session.modified = True
         for key, item in session['Shoppingcart'].items():
             if int(key) == id:
