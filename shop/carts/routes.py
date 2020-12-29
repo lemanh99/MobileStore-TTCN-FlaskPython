@@ -11,12 +11,14 @@ import json
 
 
 def brands():
-    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    # brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    brands = Brand.query.all()
     return brands
 
 
 def categories():
-    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    # categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    categories = Category.query.order_by(Category.name.desc()).all()
     return categories
 
 
@@ -114,6 +116,15 @@ def updatecart(code):
                 if int(key) == code:
                     item['quantity'] = quantity
                     item['color'] = color
+                    if current_user.is_authenticated:
+                        orders = CustomerOrder.query.filter(
+                            CustomerOrder.customer_id == current_user.id).filter(
+                            CustomerOrder.status == None).order_by(CustomerOrder.id.desc()).all()
+                        for order in orders:
+                            if key in order.orders:
+                                customer_order = CustomerOrder.query.get_or_404(order.id)
+                                customer_order.orders = {key: session['Shoppingcart'][key]}
+                                db.session.commit()
                     return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
