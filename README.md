@@ -4,7 +4,7 @@ Link website:
 - Giao diện người dùng: [https://thuctapcongnhan2020.herokuapp.com/](https://thuctapcongnhan2020.herokuapp.com/)
 - Giao diện admin: [https://thuctapcongnhan2020.herokuapp.com/admin](https://thuctapcongnhan2020.herokuapp.com/admin)
 
-Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự đóng góp của các thành viên: [Boss1](https://www.facebook.com/ndminh1004/), [Boss2](https://www.facebook.com/hoanglongnhat0605/), [Boss3](https://www.facebook.com/proxike/), [Boss4](https://www.facebook.com/profile.php?id=100001136116158).
+Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự đóng góp của các thành viên: [Đức Minh](https://www.facebook.com/ndminh1004/), [Long Nhật](https://www.facebook.com/hoanglongnhat0605/), [Đăng Bin](https://www.facebook.com/proxike/), [A Danh](https://www.facebook.com/profile.php?id=100001136116158).
 - Tên đề tài : **Website bán hàng điện thoại.**
 - Ngôn ngữ backend: [Flask-Python](https://flask.palletsprojects.com/en/1.1.x/)
 - Cơ sở dữ liệu: MySQL.
@@ -12,7 +12,7 @@ Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự �
 - Ngày bắt dầu code: 14/10/2020
 - Công bố version 1.0. : 09/11/2020 (Hoàn thành tương đối các chức năng theo sơ đồ use_case)
 	- 1.0.1: 10/11/2020 (Chỉnh sửa 1 số lỗi, Thêm chức năng chat bot messenger facebook, lưu lịch sử giỏ hàng)
-
+	- 1.1: 30/12/2020 (Cập nhận giao diện mới cho admin)
 ## Mục lục:
 1.[Hướng dẫn cài đặt](#p1)
 

@@ -4,48 +4,63 @@
 {% include "admin/header.html"%}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{url_for('admin_manager')}}">Home</a></li>
+                        <li class="breadcrumb-item active">Admin</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
     <!-- Main content -->
     <section class="content">
-        <!-- Default box -->
-        <div
-                class="hold-transition register-page"
-                style="
-    background-image: url('../../static/assets/bg.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;"
-        >
-            {% from "_formhelpers.html" import render_field %}
-            <div class="register-box" style="width: 700px;">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="login-box-msg" style="font-weight: bold; font-size: larger; color: #007bff;">Add new
-                            Admin</p>
-                        {% include '_messages.html'%}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add New Admin</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        {% from "_formhelpers.html" import render_field %}
+
                         <form method="post" enctype="multipart/form-data">
                             {{ form.csrf_token }}
-                            <div>
-                                {{ render_field(form.name, class="form-control") }}
-                                {{ render_field(form.username, class="form-control") }}
-                                {{ render_field(form.email, class="form-control") }}
-                                {{ render_field(form.password, class="form-control") }}
-                                {{ render_field(form.confirm, class="form-control") }}
-                            </div>
-                            <div class="row justify-content-center mb-3">
-                                <div class="col-4">
-                                    <button type="submit" class="btn btn-primary btn-block">Add</button>
+                            <div class="card">
+                                <div class="card-body">
+                                    {% include '_messages.html'%}
+                                    <div>
+                                        {{ render_field(form.name, class="form-control") }}
+                                        {{ render_field(form.username, class="form-control") }}
+                                        {{ render_field(form.email, class="form-control") }}
+                                        {{ render_field(form.password, class="form-control") }}
+                                        {{ render_field(form.confirm, class="form-control") }}
+                                    </div>
                                 </div>
+                            </div><!-- /.card -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Add</button>
                             </div>
                         </form>
+                        <!-- /.form-box -->
+
                     </div>
-                    <!-- /.form-box -->
-                </div><!-- /.card -->
+                    <!-- /.card -->
+                </div>
             </div>
         </div>
-        <!-- /.card -->
     </section>
-    <!-- /.content -->
+    <!--/.col (left) -->
 </div>
 {% include "admin/footer.html"%}
 {% endblock content %}

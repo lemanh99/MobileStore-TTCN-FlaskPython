@@ -3,7 +3,25 @@
 {%include 'admin/header.html'%}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{url_for('admin_manager')}}">Home</a></li>
+                        {%if brands %}
+                        <li class="breadcrumb-item active">Brand</li>
+                        {% else %}
+                        <li class="breadcrumb-item active">Category</li>
+                        {%endif %}
 
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
     <!-- Main content -->
     <section class="content">
         <!-- Default box -->
@@ -11,36 +29,66 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6" style=" margin-top: 35px; ">
-                    {% include "_messages.html" %}
-                    {%if brands %}
-                    <h1 class="text-center-mt-5"> Add a brand</h1>
-                    <form action="" method='POST'>
-                        <div class="form-group">
-                            <span>Seleted Categor</span>
-                            <select name="category" id="category" class="form-control" required>
-                                <option value=""> Select A category</option>
-                                {% for category in categories %}
-                                <option value="{{category.id}}">{{category.name}}</option>
-                                {% endfor %}
-                            </select>
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            {%if brands %}
+                            <h3 class="card-title">Add New Brand</h3>
+                            {% else %}
+                            <h3 class="card-title">Add New Category</h3>
+                            {%endif %}
                         </div>
-                        <div class="form-group">
-                            <span>Name brand</span>
-                            <input type="text" name="brand" class="form-control">
+
+                        <div class="card">
+                            <div class="card-body">
+                                {% include "_messages.html" %}
+                                {%if brands %}
+                                <form action="" method='POST'>
+                                    <div class="form-group">
+                                        <div>
+                                            <span>Seleted Category</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <select name="category" id="category" class="form-control" required>
+                                                    <option value=""> Select A category</option>
+                                                    {% for category in categories %}
+                                                    <option value="{{category.id}}">{{category.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col ml-auto">
+                                                <button class="btn btn-block bg-gradient-info" onclick="window.location.href='{{url_for('addcat')}}'">New Category
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <span>Name brand</span>
+                                        <input type="text" name="brand" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Add Brand" class="btn btn-primary">
+
+                                    </div>
+                                </form>
+                                {% else %}
+                                <form action="" method='POST'>
+                                    <div class="form-group">
+                                        <span>Name category</span>
+                                        <input type="text" name="category" class="form-control">
+                                    </div>
+                                    <input type="submit" value="Add category" class="btn btn-primary">
+                                </form>
+                                {% endif %}
+                            </div>
                         </div>
-                        <input type="submit" value="add brand" class="btn btn-info mt-2">
-                    </form>
-                    {% else %}
-                    <h1 class="text-center-mt-5"> Add a category</h1>
-                    <form action="" method='POST'>
-                        <input type="text" name="category" class="form-control">
-                        <input type="submit" value="add category" class="btn btn-info mt-2">
-                    </form>
-                    {% endif %}
+                    </div>
                 </div>
                 <div class="col-md-3"></div>
             </div>
         </div>
+
         <!-- /.card -->
     </section>
     <!-- /.content -->

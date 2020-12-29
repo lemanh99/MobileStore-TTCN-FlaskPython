@@ -114,13 +114,14 @@ def orders_manager():
     if 'email' not in session:
         flash(f'please login first', 'danger')
         return redirect(url_for('login'))
-    page = request.args.get('page', 1, type=int)
+    # page = request.args.get('page', 1, type=int)
     user = Admin.query.filter_by(email=session['email']).all()
     customers = Register.query.all()
-
     # products = Addproduct.query.order_by(Addproduct.id.desc())
-    orders = CustomerOrder.query.filter(CustomerOrder.status != None).filter(
-        CustomerOrder.status != "Cancelled").order_by(CustomerOrder.id.desc()).paginate(page=page, per_page=10)
+    # orders = CustomerOrder.query.filter(CustomerOrder.status != None).filter(
+    #     CustomerOrder.status != "Cancelled").order_by(CustomerOrder.id.desc()).paginate(page=page, per_page=10)\
+
+    orders = CustomerOrder.query.filter(CustomerOrder.status != None).order_by(CustomerOrder.id.desc()).all()
     return render_template('admin/manage_orders.html', title='Order manager page', user=user[0], orders=orders,
                            customers=customers)
 
@@ -224,8 +225,9 @@ def product():
         flash(f'Please login first', 'danger')
         return redirect(url_for('login'))
     # products = Addproduct.query.all()
-    page = request.args.get('page', 1, type=int)
-    products = Addproduct.query.order_by(Addproduct.id.desc()).paginate(page=page, per_page=10)
+    # page = request.args.get('page', 1, type=int)
+    # products = Addproduct.query.order_by(Addproduct.id.desc()).paginate(page=page, per_page=10)
+    products = Addproduct.query.all()
     user = Admin.query.filter_by(email=session['email']).all()
     return render_template('admin/index.html', title='Product page', products=products, user=user[0])
 
