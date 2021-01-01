@@ -12,7 +12,7 @@ Trên đây là source của báo cáo thực tập công nhân. Cám ơn sự �
 - Ngày bắt dầu code: 14/10/2020
 - Công bố version 1.0. : 09/11/2020 (Hoàn thành tương đối các chức năng theo sơ đồ use_case)
 	- 1.0.1: 10/11/2020 (Chỉnh sửa 1 số lỗi, Thêm chức năng chat bot messenger facebook, lưu lịch sử giỏ hàng)
-	- 1.1: 30/12/2020 (Cập nhận giao diện mới cho admin)
+	- 1.1  : 30/12/2020 (Cập nhận giao diện mới cho admin)
 ## Mục lục:
 1.[Hướng dẫn cài đặt](#p1)
 
